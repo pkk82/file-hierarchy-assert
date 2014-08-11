@@ -17,8 +17,8 @@ public class FileHierarchyAssertHasCountOfSubdirsInPathTest extends AbstractFile
 	public void shouldFailWhenEmpty() {
 		givenFileHierarchyEmptyAssert();
 		whenHasCountOfSubdirsInPath(1);
-		thenAssertionIsFailed().hasMessage(String.format("Expecting:\n %s\nto contain:\n 1 directory\n" +
-						"but contains:\n 0 directories", preparePath())
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto contain:\n <1> directory\n" +
+						"but contains:\n <0> directories\n", preparePath())
 		);
 	}
 
@@ -33,8 +33,8 @@ public class FileHierarchyAssertHasCountOfSubdirsInPathTest extends AbstractFile
 	public void shouldFailWhenOneFile() {
 		givenFileHierarchyWithOneFileAssert();
 		whenHasCountOfSubdirsInPath(1);
-		thenAssertionIsFailed().hasMessage(String.format("Expecting:\n %s\nto contain:\n 1 directory\n" +
-						"but contains:\n 0 directories", preparePath())
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto contain:\n <1> directory\n" +
+						"but contains:\n <0> directories\n", preparePath())
 		);
 	}
 
@@ -65,7 +65,7 @@ public class FileHierarchyAssertHasCountOfSubdirsInPathTest extends AbstractFile
 	public void shouldFailWhenNoDirectory() {
 		givenFileHierarchyAssert();
 		whenHasCountOfSubdirsInPath(1, "dir1", "dir11", "dir111");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting file:<%s> to exist",
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
 				preparePath("dir1", "dir11", "dir111")));
 	}
 
@@ -73,7 +73,7 @@ public class FileHierarchyAssertHasCountOfSubdirsInPathTest extends AbstractFile
 	public void shouldFailWhenFile() {
 		givenFileHierarchyAssert();
 		whenHasCountOfSubdirsInPath(1, "dir1", "file11");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory",
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
 				preparePath("dir1", "file11")));
 	}
 

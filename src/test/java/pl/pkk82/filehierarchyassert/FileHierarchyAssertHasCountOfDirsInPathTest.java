@@ -17,8 +17,8 @@ public class FileHierarchyAssertHasCountOfDirsInPathTest extends AbstractFileHie
 	public void shouldFailWhenEmpty() {
 		givenFileHierarchyEmptyAssert();
 		whenHasCountOfDirsInPath(2);
-		thenAssertionIsFailed().hasMessage(String.format("Expecting:\n %s\nto contain:\n 2 directories\n" +
-						"but contains:\n 1 directory", preparePath())
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto contain:\n <2> directories\n" +
+						"but contains:\n <1> directory\n <%s>\n", preparePath(), preparePath())
 		);
 	}
 
@@ -33,8 +33,8 @@ public class FileHierarchyAssertHasCountOfDirsInPathTest extends AbstractFileHie
 	public void shouldFailWhenOneFile() {
 		givenFileHierarchyWithOneFileAssert();
 		whenHasCountOfDirsInPath(0);
-		thenAssertionIsFailed().hasMessage(String.format("Expecting:\n %s\nto contain:\n 0 directories\n" +
-						"but contains:\n 1 directory", preparePath())
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto contain:\n <0> directories\n" +
+						"but contains:\n <1> directory\n <%s>\n", preparePath(), preparePath())
 		);
 	}
 
@@ -65,7 +65,7 @@ public class FileHierarchyAssertHasCountOfDirsInPathTest extends AbstractFileHie
 	public void shouldFailWhenNoDirectory() {
 		givenFileHierarchyAssert();
 		whenHasCountOfDirsInPath(1, "dir1", "dir11", "dir111");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting file:<%s> to exist",
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
 				preparePath("dir1", "dir11", "dir111")));
 	}
 
@@ -73,7 +73,7 @@ public class FileHierarchyAssertHasCountOfDirsInPathTest extends AbstractFileHie
 	public void shouldFailWhenFile() {
 		givenFileHierarchyAssert();
 		whenHasCountOfDirsInPath(1, "dir1", "file11");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory",
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
 				preparePath("dir1", "file11")));
 	}
 

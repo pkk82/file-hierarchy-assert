@@ -17,8 +17,8 @@ public class FileHierarchyAssertHasCountOfFilesAndDirsInPathTest extends Abstrac
 	public void shouldFailWhenEmpty() {
 		givenFileHierarchyEmptyAssert();
 		whenHasCountOfFilesAndDirsInPath(2);
-		thenAssertionIsFailed().hasMessage(String.format("Expecting:\n %s\nto contain:\n 2 files/directories\n" +
-						"but contains:\n 1 file/directory", preparePath())
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto contain:\n <2> files/directories\n" +
+						"but contains:\n <1> file/directory\n <%s>\n", preparePath(), preparePath())
 		);
 	}
 
@@ -33,8 +33,9 @@ public class FileHierarchyAssertHasCountOfFilesAndDirsInPathTest extends Abstrac
 	public void shouldFailWhenOneFile() {
 		givenFileHierarchyWithOneFileAssert();
 		whenHasCountOfFilesAndDirsInPath(0);
-		thenAssertionIsFailed().hasMessage(String.format("Expecting:\n %s\nto contain:\n 0 files/directories\n" +
-						"but contains:\n 2 files/directories", preparePath())
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto contain:\n <0> files/directories\n" +
+								"but contains:\n <2> files/directories\n <%s>\n <%s>\n",
+						preparePath(), preparePath(), preparePath("oneFile"))
 		);
 	}
 
@@ -60,12 +61,11 @@ public class FileHierarchyAssertHasCountOfFilesAndDirsInPathTest extends Abstrac
 	}
 
 
-
 	@Test
 	public void shouldFailWhenNoDirectory() {
 		givenFileHierarchyAssert();
 		whenHasCountOfFilesAndDirsInPath(1, "dir1", "dir11", "dir111");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting file:<%s> to exist",
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
 				preparePath("dir1", "dir11", "dir111")));
 	}
 
@@ -73,11 +73,9 @@ public class FileHierarchyAssertHasCountOfFilesAndDirsInPathTest extends Abstrac
 	public void shouldFailWhenFile() {
 		givenFileHierarchyAssert();
 		whenHasCountOfFilesAndDirsInPath(1, "dir1", "file11");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory",
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
 				preparePath("dir1", "file11")));
 	}
-
-
 
 
 	private void whenHasCountOfFilesAndDirsInPath(int count, String... path) {

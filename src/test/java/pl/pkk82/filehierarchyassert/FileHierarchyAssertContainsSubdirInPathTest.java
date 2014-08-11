@@ -33,14 +33,14 @@ public class FileHierarchyAssertContainsSubdirInPathTest extends AbstractFileHie
 	public void shouldFailWhenEmpty() {
 		givenFileHierarchyAssert();
 		whenContainsSubdirInPath("dir111", "dir1", "dir11");
-		thenAssertionIsFailed().hasMessage("Expecting one of:\n <no candidates>\nhas name equal to:\n dir111");
+		thenAssertionIsFailed().hasMessage("\nExpecting one of:\n <no candidates>\nhas name equal to:\n <dir111>");
 	}
 
 	@Test
 	public void shouldFailWhenNoDir() {
 		givenFileHierarchyAssert();
 		whenContainsSubdirInPath("dir");
-		thenAssertionIsFailed().hasMessage(String.format("Expecting one of:\n <%s>\n <%s>\nhas name equal to:\n dir",
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting one of:\n <%s>\n <%s>\nhas name equal to:\n <dir>",
 				preparePath("dir1"), preparePath("dir2")));
 	}
 
@@ -48,7 +48,8 @@ public class FileHierarchyAssertContainsSubdirInPathTest extends AbstractFileHie
 	public void shouldFailWhenFileInstead() {
 		givenFileHierarchyAssert();
 		whenContainsSubdirInPath("file11", "dir1");
-		thenAssertionIsFailed().hasMessage(String.format("Expecting one of:\n <%s>\n <%s>\nhas name equal to:\n file11",
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting one of:\n <%s>\n <%s>\nhas name equal to:\n" +
+						" <file11>",
 				preparePath("dir1", "dir11"), preparePath("dir1", "dir12")));
 	}
 
@@ -64,7 +65,7 @@ public class FileHierarchyAssertContainsSubdirInPathTest extends AbstractFileHie
 		givenFileHierarchyAssert();
 		whenContainsSubdirInPath("file\\d", NameMatcher.REGEX);
 		thenAssertionIsFailed().hasMessage(
-				String.format("Expecting one of:\n <%s>\n <%s>\nhas name matching to:\n file\\d",
+				String.format("\nExpecting one of:\n <%s>\n <%s>\nhas name matching to:\n <file\\d>",
 						preparePath("dir1"), preparePath("dir2")));
 	}
 
