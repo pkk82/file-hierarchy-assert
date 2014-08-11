@@ -222,7 +222,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	private String descPaths(Collection<File> paths, String whenEmpty) {
-		StringBuffer buffer = new StringBuffer("");
+		StringBuilder buffer = new StringBuilder("");
 		if (paths.isEmpty()) {
 			buffer.append(whenEmpty);
 		} else {
