@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.assertj.core.api.AbstractAssert;
@@ -141,18 +142,38 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert containsSubdirInPath(String dirName, NameMatcher nameMatcher, String... dirPath) {
-		File rootDir = calculateDirFile(dirPath);
+		File searchDir = calculateDirFile(dirPath);
 		IOFileFilter searchFilter = DirectoryFileFilter.INSTANCE;
 		FileFilter dirFilter = new AndFileFilter(searchFilter, new FileNameCondition(dirName, nameMatcher));
-		List<File> candidates = Arrays.asList(rootDir.listFiles((FileFilter) searchFilter));
-		List<File> result = Arrays.asList(rootDir.listFiles(dirFilter));
+		List<File> candidates = Arrays.asList(searchDir.listFiles((FileFilter) searchFilter));
+		List<File> result = Arrays.asList(searchDir.listFiles(dirFilter));
 		then(result.size())
-				.overridingErrorMessage("\nExpecting one of:\n%s\nhas name %s to:\n <%s>",
+				.overridingErrorMessage("\nExpecting one of:\n%s\nhas a name %s to:\n%s\n",
 						descPaths(candidates, " <no candidates>"),
 						nameMatcher.getDescription(),
-						dirName)
+						descName(dirName))
 				.isGreaterThan(0);
 		return this;
+	}
+
+
+	public FileHierarchyAssert containsFileInPath(String fileName, String... dirPath) {
+		return containsFileInPath(fileName, nameMatcher, dirPath);
+	}
+
+	public FileHierarchyAssert containsFileInPath(String fileName, NameMatcher nameMatcher, String... dirPath) {
+		File searchDir = calculateDirFile(dirPath);
+		IOFileFilter searchFilter = FileFileFilter.FILE;
+		FileFilter fileFilter = new AndFileFilter(searchFilter, new FileNameCondition(fileName, nameMatcher));
+		List<File> result = Arrays.asList(searchDir.listFiles(fileFilter));
+		then(result.size())
+				.overridingErrorMessage("\nExpecting:\n%s\nto contain a file with a name %s to:\n%s\n",
+						descPath(searchDir.toPath()),
+						nameMatcher.getDescription(),
+						descName(fileName))
+				.isGreaterThan(0);
+		return this;
+
 	}
 
 	private Collection<File> findDirsRecursively(File rootDir) {
@@ -166,10 +187,10 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return directories;
 	}
 
+
 	private Collection<File> findFilesRecursively(File rootDir) {
 		return FileUtils.listFiles(rootDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 	}
-
 
 	private Collection<File> findFilesAndDirsRecursively(File rootDir) {
 		return FileUtils.listFilesAndDirs(rootDir, TrueFileFilter.INSTANCE,
@@ -213,6 +234,10 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		}
 	}
 
+	private String descName(String name) {
+		return String.format(" <%s>", name);
+	}
+
 	private String descPath(Path path) {
 		return String.format(" <%s>", path);
 	}
@@ -220,6 +245,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	private String descPaths(Collection<File> paths) {
 		return descPaths(paths, "");
 	}
+
 
 	private String descPaths(Collection<File> paths, String whenEmpty) {
 		StringBuilder buffer = new StringBuilder("");
@@ -237,7 +263,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		}
 		return buffer.toString();
 	}
-
 
 	private FileHierarchyAssert exists() {
 		isNotNull();
