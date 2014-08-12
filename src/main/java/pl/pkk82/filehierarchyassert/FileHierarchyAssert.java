@@ -1,9 +1,11 @@
 package pl.pkk82.filehierarchyassert;
 
+import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.BDDAssertions.then;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
@@ -182,9 +184,31 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	}
 
+	public FileHierarchyAssert containsFileWithContentInPath(String fileName, List<String> content, String... dirPath) {
+		return containsFileWithContentInPath(fileName, content, nameMatcher, dirPath);
+	}
+
+	public FileHierarchyAssert containsFileWithContentInPath(String fileName, List<String> content,
+			NameMatcher nameMatcher, String... dirPath) {
+		containsFileInPath(fileName, NameMatcher.STANDARD, dirPath);
+		File file = new File(calculateDirFile(dirPath), fileName);
+		try {
+			List<String> lines = FileUtils.readLines(file);
+			then(lines).overridingErrorMessage("\nExpecting:\n%s\nto contain lines:\n%s,\nbut it contains:\n%s\n",
+					descPath(file.toPath()),
+					descLines(content, " <no lines>"),
+					descLines(lines, " <no lines>"))
+					.isEqualTo(content);
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+		return this;
+	}
+
 	private Collection<File> findDirsRecursively(File rootDir) {
 		return FileUtils.listFilesAndDirs(rootDir, FalseFileFilter.FALSE, TrueFileFilter.INSTANCE);
 	}
+
 
 	private Collection<File> findSubdirsRecursively(File rootDir) {
 		Collection<File> directories = FileUtils.listFilesAndDirs(rootDir, FalseFileFilter.INSTANCE,
@@ -193,7 +217,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return directories;
 	}
 
-
 	private Collection<File> findFilesRecursively(File rootDir) {
 		return FileUtils.listFiles(rootDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 	}
@@ -201,13 +224,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	private Collection<File> findFilesAndDirsRecursively(File rootDir) {
 		return FileUtils.listFilesAndDirs(rootDir, TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
-	}
-
-	private Path calculateFilePath(String fileName, String... dirPath) {
-		Path actualPath = calculateDirPath(dirPath);
-		actualPath = actualPath.resolve(fileName);
-		then(actualPath.toFile()).exists().isFile();
-		return actualPath;
 	}
 
 	private Path calculateDirPath(String... dirPath) {
@@ -248,10 +264,10 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return String.format(" <%s>", path);
 	}
 
+
 	private String descPaths(Collection<File> paths) {
 		return descPaths(paths, "");
 	}
-
 
 	private String descPaths(Collection<File> paths, String whenEmpty) {
 		StringBuilder buffer = new StringBuilder("");
@@ -269,6 +285,24 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		}
 		return buffer.toString();
 	}
+
+	private String descLines(Collection<String> lines, String whenEmpty) {
+		StringBuilder buffer = new StringBuilder("");
+		if (lines.isEmpty()) {
+			buffer.append(whenEmpty);
+		} else {
+			int i = lines.size();
+			for (String line : lines) {
+				buffer.append(descName(line));
+				if (--i != 0) {
+					buffer.append('\n');
+				}
+
+			}
+		}
+		return buffer.toString();
+	}
+
 
 	private FileHierarchyAssert exists() {
 		isNotNull();
