@@ -148,10 +148,12 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		List<File> candidates = Arrays.asList(searchDir.listFiles((FileFilter) searchFilter));
 		List<File> result = Arrays.asList(searchDir.listFiles(dirFilter));
 		then(result.size())
-				.overridingErrorMessage("\nExpecting one of:\n%s\nhas a name %s to:\n%s\n",
-						descPaths(candidates, " <no candidates>"),
+				.overridingErrorMessage("\nExpecting:\n%s\n" +
+								"to contain a directory with a name %s to:\n%s,\n" +
+								"but it contains:\n%s\n", descPath(searchDir.toPath()),
 						nameMatcher.getDescription(),
-						descName(dirName))
+						descName(dirName),
+						descPaths(candidates, " <no directories>"))
 				.isGreaterThan(0);
 		return this;
 	}
@@ -165,12 +167,16 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		File searchDir = calculateDirFile(dirPath);
 		IOFileFilter searchFilter = FileFileFilter.FILE;
 		FileFilter fileFilter = new AndFileFilter(searchFilter, new FileNameCondition(fileName, nameMatcher));
+		List<File> candidates = Arrays.asList(searchDir.listFiles((FileFilter) searchFilter));
 		List<File> result = Arrays.asList(searchDir.listFiles(fileFilter));
 		then(result.size())
-				.overridingErrorMessage("\nExpecting:\n%s\nto contain a file with a name %s to:\n%s\n",
+				.overridingErrorMessage("\nExpecting:\n%s\n" +
+								"to contain a file with a name %s to:\n%s,\n" +
+								"but it contains:\n%s\n",
 						descPath(searchDir.toPath()),
 						nameMatcher.getDescription(),
-						descName(fileName))
+						descName(fileName),
+						descPaths(candidates, " <no files>"))
 				.isGreaterThan(0);
 		return this;
 

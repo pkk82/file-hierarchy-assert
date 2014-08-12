@@ -33,23 +33,28 @@ public class FileHierarchyAssertContainsSubdirInPathTest extends AbstractFileHie
 	public void shouldFailWhenEmpty() {
 		givenFileHierarchyAssert();
 		whenContainsSubdirInPath("dir111", "dir1", "dir11");
-		thenAssertionIsFailed().hasMessage("\nExpecting one of:\n <no candidates>\nhas a name equal to:\n <dir111>\n");
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+				"to contain a directory with a name equal to:\n <dir111>,\n" +
+				"but it contains:\n <no directories>\n", preparePath("dir1", "dir11")));
 	}
 
 	@Test
 	public void shouldFailWhenNoDir() {
 		givenFileHierarchyAssert();
 		whenContainsSubdirInPath("dir");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting one of:\n" +
-						" <%s>\n <%s>\nhas a name equal to:\n <dir>\n", preparePath("dir1"), preparePath("dir2")));
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+				"to contain a directory with a name equal to:\n <dir>,\n" +
+				"but it contains:\n <%s>\n <%s>\n", preparePath(), preparePath("dir1"), preparePath("dir2")));
 	}
 
 	@Test
 	public void shouldFailWhenFileInstead() {
 		givenFileHierarchyAssert();
 		whenContainsSubdirInPath("file11", "dir1");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting one of:\n <%s>\n <%s>\nhas a name equal to:\n" +
-						" <file11>\n", preparePath("dir1", "dir11"), preparePath("dir1", "dir12")));
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+						"to contain a directory with a name equal to:\n <file11>,\n" +
+						"but it contains:\n <%s>\n <%s>\n",
+				preparePath("dir1"), preparePath("dir1", "dir11"), preparePath("dir1", "dir12")));
 	}
 
 	@Test
@@ -63,9 +68,9 @@ public class FileHierarchyAssertContainsSubdirInPathTest extends AbstractFileHie
 	public void shouldFailWithRegex() {
 		givenFileHierarchyAssert();
 		whenContainsSubdirInPath("file\\d", NameMatcher.REGEX);
-		thenAssertionIsFailed().hasMessage(
-				String.format("\nExpecting one of:\n <%s>\n <%s>\nhas a name matching to:\n <file\\d>\n",
-						preparePath("dir1"), preparePath("dir2")));
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+				"to contain a directory with a name matching to:\n <file\\d>,\n" +
+				"but it contains:\n <%s>\n <%s>\n", preparePath(), preparePath("dir1"), preparePath("dir2")));
 	}
 
 	private void whenContainsSubdirInPath(String dirName, String... dirPath) {

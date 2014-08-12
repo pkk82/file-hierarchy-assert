@@ -34,7 +34,8 @@ public class FileHierarchyAssertContainsFileInPathTest extends AbstractFileHiear
 		givenFileHierarchyAssert();
 		whenContainsFileInPath("file111", "dir1", "dir11");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
-				"to contain a file with a name equal to:\n <file111>\n", preparePath("dir1", "dir11")));
+				"to contain a file with a name equal to:\n <file111>,\n" +
+				"but it contains:\n <no files>\n", preparePath("dir1", "dir11")));
 	}
 
 	@Test
@@ -50,7 +51,8 @@ public class FileHierarchyAssertContainsFileInPathTest extends AbstractFileHiear
 		givenFileHierarchyAssert();
 		whenContainsFileInPath("dir21", "dir2");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
-				"to contain a file with a name equal to:\n <dir21>\n", preparePath("dir2")));
+				"to contain a file with a name equal to:\n <dir21>,\n" +
+				"but it contains:\n <no files>\n", preparePath("dir2")));
 	}
 
 	@Test
@@ -64,9 +66,9 @@ public class FileHierarchyAssertContainsFileInPathTest extends AbstractFileHiear
 	public void shouldFailWithRegex() {
 		givenFileHierarchyAssert();
 		whenContainsFileInPath("dir\\d", NameMatcher.REGEX);
-		thenAssertionIsFailed().hasMessage(
-				String.format("\nExpecting:\n <%s>\nto contain a file with a name matching to:\n <dir\\d>\n",
-						preparePath()));
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+				"to contain a file with a name matching to:\n <dir\\d>,\n" +
+				"but it contains:\n <%s>\n <%s>\n", preparePath(), preparePath("file1"), preparePath("file2")));
 	}
 
 	private void whenContainsFileInPath(String fileName, String... dirPath) {
