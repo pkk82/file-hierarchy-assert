@@ -2,13 +2,13 @@ package pl.pkk82.filehierarchyassert;
 
 import java.util.regex.Pattern;
 
-public enum NameMatcher {
+public enum StringMatcher {
 
 	STANDARD("equal"), REGEX("matching");
 
 	private final String description;
 
-	private NameMatcher(String description) {
+	private StringMatcher(String description) {
 		this.description = description;
 	}
 

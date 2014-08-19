@@ -36,53 +36,55 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	private static final String DESC_FILE_AND_DIR_SING = "file/directory";
 	private static final String DESC_FILE_AND_DIR_PLURAL = "files/directories";
 
-	private final NameMatcher nameMatcher;
+	private final StringMatcher stringMatcher;
 
-	public FileHierarchyAssert(FileHierarchy actual, NameMatcher nameMatcher) {
+	public FileHierarchyAssert(FileHierarchy actual, StringMatcher stringMatcher) {
 		super(actual, FileHierarchyAssert.class);
-		this.nameMatcher = nameMatcher;
+		this.stringMatcher = stringMatcher;
 		exists();
 	}
 
 	public FileHierarchyAssert(FileHierarchy actual) {
-		this(actual, NameMatcher.STANDARD);
+		this(actual, StringMatcher.STANDARD);
 	}
 
-	public FileHierarchyAssert(File actual, NameMatcher nameMatcher) {
-		this(actual == null ? null : new FileHierarchy(actual.toPath()), nameMatcher);
+	public FileHierarchyAssert(File actual, StringMatcher stringMatcher) {
+		this(actual == null ? null : new FileHierarchy(actual.toPath()), stringMatcher);
 	}
 
 
 	public FileHierarchyAssert(File actual) {
-		this(actual, NameMatcher.STANDARD);
+		this(actual, StringMatcher.STANDARD);
 	}
 
-	public FileHierarchyAssert(Path actual, NameMatcher nameMatcher) {
-		this(actual == null ? null : new FileHierarchy(actual), nameMatcher);
+	public FileHierarchyAssert(Path actual, StringMatcher stringMatcher) {
+		this(actual == null ? null : new FileHierarchy(actual), stringMatcher);
 	}
 
 
 	public FileHierarchyAssert(Path actual) {
-		this(actual, NameMatcher.STANDARD);
+		this(actual, StringMatcher.STANDARD);
 	}
 
 
 	public FileHierarchyAssert hasRootDirWithName(final String rootDirName) {
-		return hasRootDirWithName(rootDirName, nameMatcher);
+		return hasRootDirWithName(rootDirName, stringMatcher);
 	}
 
-	public FileHierarchyAssert hasRootDirWithName(final String rootDirName, final NameMatcher nameMatcher) {
-		then(actual.getRootDirectoryAsFile()).has(new FileNameCondition(rootDirName, nameMatcher));
+	public FileHierarchyAssert hasRootDirWithName(final String rootDirName, final StringMatcher rootDirNameMatcher) {
+		then(actual.getRootDirectoryAsFile()).has(new FileNameCondition(rootDirName, rootDirNameMatcher));
 		return this;
 	}
 
 	public FileHierarchyAssert hasParentDirWithName(final String parentDirName) {
-		return hasParentDirWithName(parentDirName, this.nameMatcher);
+		return hasParentDirWithName(parentDirName, this.stringMatcher);
 	}
 
 
-	public FileHierarchyAssert hasParentDirWithName(final String parentDirName, final NameMatcher nameMatcher) {
-		then(actual.getRootDirectoryAsFile().getParentFile()).has(new FileNameCondition(parentDirName, nameMatcher));
+	public FileHierarchyAssert hasParentDirWithName(final String parentDirName,
+			final StringMatcher parentDirNameMatcher) {
+		then(actual.getRootDirectoryAsFile().getParentFile())
+				.has(new FileNameCondition(parentDirName, parentDirNameMatcher));
 		return this;
 	}
 
@@ -140,20 +142,20 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert containsSubdirInPath(String dirName, String... dirPath) {
-		return containsSubdirInPath(dirName, nameMatcher, dirPath);
+		return containsSubdirInPath(dirName, stringMatcher, dirPath);
 	}
 
-	public FileHierarchyAssert containsSubdirInPath(String dirName, NameMatcher nameMatcher, String... dirPath) {
+	public FileHierarchyAssert containsSubdirInPath(String dirName, StringMatcher dirNameMatcher, String... dirPath) {
 		File searchDir = calculateDirFile(dirPath);
 		IOFileFilter searchFilter = DirectoryFileFilter.INSTANCE;
-		FileFilter dirFilter = new AndFileFilter(searchFilter, new FileNameCondition(dirName, nameMatcher));
+		FileFilter dirFilter = new AndFileFilter(searchFilter, new FileNameCondition(dirName, dirNameMatcher));
 		List<File> candidates = Arrays.asList(searchDir.listFiles((FileFilter) searchFilter));
 		List<File> result = Arrays.asList(searchDir.listFiles(dirFilter));
 		then(result.size())
 				.overridingErrorMessage("\nExpecting:\n%s\n" +
 								"to contain a directory with a name %s to:\n%s,\n" +
 								"but it contains:\n%s\n", descPath(searchDir.toPath()),
-						nameMatcher.getDescription(),
+						dirNameMatcher.getDescription(),
 						descName(dirName),
 						descPaths(candidates, " <no directories>"))
 				.isGreaterThan(0);
@@ -162,13 +164,13 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert containsFileInPath(String fileName, String... dirPath) {
-		return containsFileInPath(fileName, nameMatcher, dirPath);
+		return containsFileInPath(fileName, stringMatcher, dirPath);
 	}
 
-	public FileHierarchyAssert containsFileInPath(String fileName, NameMatcher nameMatcher, String... dirPath) {
+	public FileHierarchyAssert containsFileInPath(String fileName, StringMatcher fileNameMatcher, String... dirPath) {
 		File searchDir = calculateDirFile(dirPath);
 		IOFileFilter searchFilter = FileFileFilter.FILE;
-		FileFilter fileFilter = new AndFileFilter(searchFilter, new FileNameCondition(fileName, nameMatcher));
+		FileFilter fileFilter = new AndFileFilter(searchFilter, new FileNameCondition(fileName, fileNameMatcher));
 		List<File> candidates = Arrays.asList(searchDir.listFiles((FileFilter) searchFilter));
 		List<File> result = Arrays.asList(searchDir.listFiles(fileFilter));
 		then(result.size())
@@ -176,7 +178,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 								"to contain a file with a name %s to:\n%s,\n" +
 								"but it contains:\n%s\n",
 						descPath(searchDir.toPath()),
-						nameMatcher.getDescription(),
+						fileNameMatcher.getDescription(),
 						descName(fileName),
 						descPaths(candidates, " <no files>"))
 				.isGreaterThan(0);
@@ -185,12 +187,12 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert containsFileWithContentInPath(String fileName, List<String> content, String... dirPath) {
-		return containsFileWithContentInPath(fileName, content, nameMatcher, dirPath);
+		return containsFileWithContentInPath(fileName, content, stringMatcher, dirPath);
 	}
 
 	public FileHierarchyAssert containsFileWithContentInPath(String fileName, List<String> content,
-			NameMatcher nameMatcher, String... dirPath) {
-		containsFileInPath(fileName, NameMatcher.STANDARD, dirPath);
+			StringMatcher contentMatcher, String... dirPath) {
+		containsFileInPath(fileName, StringMatcher.STANDARD, dirPath);
 		File file = new File(calculateDirFile(dirPath), fileName);
 		try {
 			List<String> lines = FileUtils.readLines(file);
@@ -313,17 +315,17 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	private static class FileNameCondition extends Condition<File> implements IOFileFilter {
 		private final String rootDirName;
-		private final NameMatcher nameMatcher;
+		private final StringMatcher stringMatcher;
 
-		public FileNameCondition(String rootDirName, NameMatcher nameMatcher) {
+		public FileNameCondition(String rootDirName, StringMatcher stringMatcher) {
 			super("file name: " + rootDirName);
 			this.rootDirName = rootDirName;
-			this.nameMatcher = nameMatcher;
+			this.stringMatcher = stringMatcher;
 		}
 
 		@Override
 		public boolean matches(File value) {
-			Matcher matcher = Pattern.compile(nameMatcher.toRegex(rootDirName)).matcher(value.getName());
+			Matcher matcher = Pattern.compile(stringMatcher.toRegex(rootDirName)).matcher(value.getName());
 			return matcher.matches();
 		}
 
