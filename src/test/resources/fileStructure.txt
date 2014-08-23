@@ -3,23 +3,23 @@
     |   file2
     |
     +---dir1
-    |   |   file11
+    |   |   file11 // contents line: file11
     |   |
     |   +---dir11
     |   \---dir12
-    |           file121
+    |           file121 // contents line: file121, file121
     |
     \---dir2
         +---dir21
-        |       file211
-        |       file212
+        |       file211 // content lines: file211, file211
+        |       file212 // content lines: file212, file212
         |
         \---dir22
             \---dir221
-                |   file2211
+                |   file2211 // content lines: file2211, file2211, file2211
                 |
                 \---dir2211
-                    |   file22111
-                    |   file22112
+                    |   file22111 // content lines: file22111, file22111, file22111, file22111
+                    |   file22112 // content lines: file22112, file22112, file22112, file22112
                     |
                     \---dir22111
