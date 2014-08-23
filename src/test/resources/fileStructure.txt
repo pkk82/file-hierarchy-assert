@@ -1,13 +1,13 @@
-\---workspaceRoot
-    |   file1
-    |   file2
+\---fileHierarchy
+    |   file1 // content lines: <empty>
+    |   file2 // content lines: <empty>
     |
     +---dir1
-    |   |   file11 // contents line: file11
+    |   |   file11 // content line: file11
     |   |
     |   +---dir11
     |   \---dir12
-    |           file121 // contents line: file121, file121
+    |           file121 // content line: file121, file121
     |
     \---dir2
         +---dir21
