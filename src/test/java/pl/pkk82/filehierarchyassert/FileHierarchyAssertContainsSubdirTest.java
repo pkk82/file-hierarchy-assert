@@ -4,13 +4,13 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 import org.junit.Test;
 
-public class FileHierarchyAssertContainsSubdirInPathTest extends AbstractFileHiearchyAssertTest {
+public class FileHierarchyAssertContainsSubdirTest extends AbstractFileHiearchyAssertTest {
 
 
 	@Test
 	public void shouldSucceed() {
 		givenFileHierarchyAssert();
-		whenContainsSubdirInPath("dir1");
+		whenContainsSubdir("dir1");
 		thenAssertionIsSucceeded();
 	}
 
@@ -18,21 +18,21 @@ public class FileHierarchyAssertContainsSubdirInPathTest extends AbstractFileHie
 	@Test
 	public void shouldSucceedWithOneLevelPath() {
 		givenFileHierarchyAssert();
-		whenContainsSubdirInPath("dir11", "dir1");
+		whenContainsSubdir("dir11", "dir1");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSucceedWithTwoLevelPath() {
 		givenFileHierarchyAssert();
-		whenContainsSubdirInPath("dir221", "dir2", "dir22");
+		whenContainsSubdir("dir221", "dir2", "dir22");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldFailWhenEmpty() {
 		givenFileHierarchyAssert();
-		whenContainsSubdirInPath("dir111", "dir1", "dir11");
+		whenContainsSubdir("dir111", "dir1", "dir11");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 				"to contain a directory with a name equal to:\n <dir111>,\n" +
 				"but it contains:\n <no directories>\n", preparePath("dir1", "dir11")));
@@ -41,7 +41,7 @@ public class FileHierarchyAssertContainsSubdirInPathTest extends AbstractFileHie
 	@Test
 	public void shouldFailWhenNoDir() {
 		givenFileHierarchyAssert();
-		whenContainsSubdirInPath("dir");
+		whenContainsSubdir("dir");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 				"to contain a directory with a name equal to:\n <dir>,\n" +
 				"but it contains:\n <%s>\n <%s>\n", preparePath(), preparePath("dir1"), preparePath("dir2")));
@@ -50,7 +50,7 @@ public class FileHierarchyAssertContainsSubdirInPathTest extends AbstractFileHie
 	@Test
 	public void shouldFailWhenFileInstead() {
 		givenFileHierarchyAssert();
-		whenContainsSubdirInPath("file11", "dir1");
+		whenContainsSubdir("file11", "dir1");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 						"to contain a directory with a name equal to:\n <file11>,\n" +
 						"but it contains:\n <%s>\n <%s>\n",
@@ -60,30 +60,30 @@ public class FileHierarchyAssertContainsSubdirInPathTest extends AbstractFileHie
 	@Test
 	public void shouldSucceedWithRegex() {
 		givenFileHierarchyAssert();
-		whenContainsSubdirInPath("dir\\d", StringMatcher.REGEX);
+		whenContainsSubdir("dir\\d", StringMatcher.REGEX);
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldFailWithRegex() {
 		givenFileHierarchyAssert();
-		whenContainsSubdirInPath("file\\d", StringMatcher.REGEX);
+		whenContainsSubdir("file\\d", StringMatcher.REGEX);
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 				"to contain a directory with a name matching to:\n <file\\d>,\n" +
 				"but it contains:\n <%s>\n <%s>\n", preparePath(), preparePath("dir1"), preparePath("dir2")));
 	}
 
-	private void whenContainsSubdirInPath(String dirName, String... dirPath) {
+	private void whenContainsSubdir(String dirName, String... dirPath) {
 		try {
-			fileHierarchyAssert.containsSubdirInPath(dirName, dirPath);
+			fileHierarchyAssert.containsSubdir(dirName, dirPath);
 		} catch (AssertionError e) {
 			throwableAssert = then(e);
 		}
 	}
 
-	private void whenContainsSubdirInPath(String dirName, StringMatcher stringMatcher, String... dirPath) {
+	private void whenContainsSubdir(String dirName, StringMatcher stringMatcher, String... dirPath) {
 		try {
-			fileHierarchyAssert.containsSubdirInPath(dirName, stringMatcher, dirPath);
+			fileHierarchyAssert.containsSubdir(dirName, stringMatcher, dirPath);
 		} catch (AssertionError e) {
 			throwableAssert = then(e);
 		}

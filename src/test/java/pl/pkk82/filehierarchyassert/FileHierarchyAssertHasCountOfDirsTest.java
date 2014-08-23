@@ -4,58 +4,58 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 import org.junit.Test;
 
-public class FileHierarchyAssertHasCountOfFilesInPathTest extends AbstractFileHiearchyAssertTest {
+public class FileHierarchyAssertHasCountOfDirsTest extends AbstractFileHiearchyAssertTest {
 
 	@Test
 	public void shouldSucceedWhenEmpty() {
 		givenFileHierarchyEmptyAssert();
-		whenHasCountOfFilesInPath(0);
+		whenHasCountOfDirs(1);
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldFailWhenEmpty() {
 		givenFileHierarchyEmptyAssert();
-		whenHasCountOfFilesInPath(2);
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto contain:\n <2> files\n" +
-						"but contains:\n <0> files\n", preparePath())
+		whenHasCountOfDirs(2);
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto contain:\n <2> directories\n" +
+						"but contains:\n <1> directory\n <%s>\n", preparePath(), preparePath())
 		);
 	}
 
 	@Test
 	public void shouldSucceedWhenOneFile() {
 		givenFileHierarchyWithOneFileAssert();
-		whenHasCountOfFilesInPath(1);
+		whenHasCountOfDirs(1);
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldFailWhenOneFile() {
 		givenFileHierarchyWithOneFileAssert();
-		whenHasCountOfFilesInPath(0);
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto contain:\n <0> files\n" +
-						"but contains:\n <1> file\n <%s>\n", preparePath(), preparePath("oneFile"))
+		whenHasCountOfDirs(0);
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto contain:\n <0> directories\n" +
+						"but contains:\n <1> directory\n <%s>\n", preparePath(), preparePath())
 		);
 	}
 
 	@Test
 	public void shouldSuccedForRoot() {
 		givenFileHierarchyAssert();
-		whenHasCountOfFilesInPath(9);
+		whenHasCountOfDirs(10);
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSuccedForOneLevelPath() {
 		givenFileHierarchyAssert();
-		whenHasCountOfFilesInPath(2, "dir1");
+		whenHasCountOfDirs(3, "dir1");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSuccedForTwoLevel() {
 		givenFileHierarchyAssert();
-		whenHasCountOfFilesInPath(3, "dir2", "dir22", "dir221");
+		whenHasCountOfDirs(3, "dir2", "dir22", "dir221");
 		thenAssertionIsSucceeded();
 	}
 
@@ -64,7 +64,7 @@ public class FileHierarchyAssertHasCountOfFilesInPathTest extends AbstractFileHi
 	@Test
 	public void shouldFailWhenNoDirectory() {
 		givenFileHierarchyAssert();
-		whenHasCountOfFilesInPath(1, "dir1", "dir11", "dir111");
+		whenHasCountOfDirs(1, "dir1", "dir11", "dir111");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
 				preparePath("dir1", "dir11", "dir111")));
 	}
@@ -72,7 +72,7 @@ public class FileHierarchyAssertHasCountOfFilesInPathTest extends AbstractFileHi
 	@Test
 	public void shouldFailWhenFile() {
 		givenFileHierarchyAssert();
-		whenHasCountOfFilesInPath(1, "dir1", "file11");
+		whenHasCountOfDirs(1, "dir1", "file11");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
 				preparePath("dir1", "file11")));
 	}
@@ -80,9 +80,9 @@ public class FileHierarchyAssertHasCountOfFilesInPathTest extends AbstractFileHi
 
 
 
-	private void whenHasCountOfFilesInPath(int count, String... path) {
+	private void whenHasCountOfDirs(int count, String... path) {
 		try {
-			fileHierarchyAssert.hasCountOfFilesInPath(count, path);
+			fileHierarchyAssert.hasCountOfDirs(count, path);
 		} catch (AssertionError e) {
 			throwableAssert = then(e).describedAs(e.getMessage());
 		}

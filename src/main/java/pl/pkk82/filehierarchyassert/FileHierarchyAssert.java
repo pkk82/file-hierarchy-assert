@@ -88,7 +88,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return this;
 	}
 
-	public FileHierarchyAssert hasCountOfFilesAndDirsInPath(int count, String... dirPath) {
+	public FileHierarchyAssert hasCountOfFilesAndDirs(int count, String... dirPath) {
 		Collection<File> files = findFilesAndDirsRecursively(calculateDirFile(dirPath));
 		then(files)
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
@@ -107,7 +107,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		}
 	}
 
-	public FileHierarchyAssert hasCountOfDirsInPath(int count, String... dirPath) {
+	public FileHierarchyAssert hasCountOfDirs(int count, String... dirPath) {
 		Collection<File> files = findDirsRecursively(calculateDirFile(dirPath));
 		then(files)
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
@@ -118,7 +118,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return this;
 	}
 
-	public FileHierarchyAssert hasCountOfSubdirsInPath(int count, String... dirPath) {
+	public FileHierarchyAssert hasCountOfSubdirs(int count, String... dirPath) {
 		Collection<File> files = findSubdirsRecursively(calculateDirFile(dirPath));
 		then(files)
 				.overridingErrorMessage(String.format("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
@@ -130,7 +130,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 
-	public FileHierarchyAssert hasCountOfFilesInPath(int count, String... dirPath) {
+	public FileHierarchyAssert hasCountOfFiles(int count, String... dirPath) {
 		Collection<File> files = findFilesRecursively(calculateDirFile(dirPath));
 		then(files)
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
@@ -141,11 +141,11 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return this;
 	}
 
-	public FileHierarchyAssert containsSubdirInPath(String dirName, String... dirPath) {
-		return containsSubdirInPath(dirName, stringMatcher, dirPath);
+	public FileHierarchyAssert containsSubdir(String dirName, String... dirPath) {
+		return containsSubdir(dirName, stringMatcher, dirPath);
 	}
 
-	public FileHierarchyAssert containsSubdirInPath(String dirName, StringMatcher dirNameMatcher, String... dirPath) {
+	public FileHierarchyAssert containsSubdir(String dirName, StringMatcher dirNameMatcher, String... dirPath) {
 		File searchDir = calculateDirFile(dirPath);
 		IOFileFilter searchFilter = DirectoryFileFilter.INSTANCE;
 		FileFilter dirFilter = new AndFileFilter(searchFilter, new FileNameCondition(dirName, dirNameMatcher));
@@ -163,11 +163,11 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 
-	public FileHierarchyAssert containsFileInPath(String fileName, String... dirPath) {
-		return containsFileInPath(fileName, stringMatcher, dirPath);
+	public FileHierarchyAssert containsFile(String fileName, String... dirPath) {
+		return containsFile(fileName, stringMatcher, dirPath);
 	}
 
-	public FileHierarchyAssert containsFileInPath(String fileName, StringMatcher fileNameMatcher, String... dirPath) {
+	public FileHierarchyAssert containsFile(String fileName, StringMatcher fileNameMatcher, String... dirPath) {
 		File searchDir = calculateDirFile(dirPath);
 		IOFileFilter searchFilter = FileFileFilter.FILE;
 		FileFilter fileFilter = new AndFileFilter(searchFilter, new FileNameCondition(fileName, fileNameMatcher));
@@ -186,8 +186,8 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	}
 
-	public FileHierarchyAssert containsFileWithContentInPath(String fileName, List<String> content, String... dirPath) {
-		containsFileInPath(fileName, StringMatcher.STANDARD, dirPath);
+	public FileHierarchyAssert containsFileWithContent(String fileName, List<String> content, String... dirPath) {
+		containsFile(fileName, StringMatcher.STANDARD, dirPath);
 		File file = new File(calculateDirFile(dirPath), fileName);
 		try {
 			List<String> lines = FileUtils.readLines(file);
