@@ -187,11 +187,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert containsFileWithContentInPath(String fileName, List<String> content, String... dirPath) {
-		return containsFileWithContentInPath(fileName, content, stringMatcher, dirPath);
-	}
-
-	public FileHierarchyAssert containsFileWithContentInPath(String fileName, List<String> content,
-			StringMatcher contentMatcher, String... dirPath) {
 		containsFileInPath(fileName, StringMatcher.STANDARD, dirPath);
 		File file = new File(calculateDirFile(dirPath), fileName);
 		try {
