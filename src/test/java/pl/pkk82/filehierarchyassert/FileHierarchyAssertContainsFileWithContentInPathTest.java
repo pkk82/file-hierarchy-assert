@@ -14,7 +14,7 @@ public class FileHierarchyAssertContainsFileWithContentInPathTest extends Abstra
 	@Test
 	public void shouldSucceed() {
 		givenFileHierarchyAssert();
-		whenContainsFileInPath("file1", ImmutableList.<String>of());
+		whenContainsFileWithContentInPath("file1", ImmutableList.<String>of());
 		thenAssertionIsSucceeded();
 	}
 
@@ -22,21 +22,21 @@ public class FileHierarchyAssertContainsFileWithContentInPathTest extends Abstra
 	@Test
 	public void shouldSucceedWithOneLevelPath() {
 		givenFileHierarchyAssert();
-		whenContainsFileInPath("file11", ImmutableList.of("file11"), "dir1");
+		whenContainsFileWithContentInPath("file11", ImmutableList.of("file11"), "dir1");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSucceedWithTwoLevelPath() {
 		givenFileHierarchyAssert();
-		whenContainsFileInPath("file212", ImmutableList.of("file212", "file212"), "dir2", "dir21");
+		whenContainsFileWithContentInPath("file212", ImmutableList.of("file212", "file212"), "dir2", "dir21");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldFailWhenExpectedEmtpy() {
 		givenFileHierarchyAssert();
-		whenContainsFileInPath("file1", ImmutableList.of("line1"));
+		whenContainsFileWithContentInPath("file1", ImmutableList.of("line1"));
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 				"to contain lines:\n <line1>,\n" +
 				"but it contains:\n <no lines>\n", preparePath("file1")));
@@ -45,13 +45,13 @@ public class FileHierarchyAssertContainsFileWithContentInPathTest extends Abstra
 	@Test
 	public void shouldFailWhenExpectedNonEmtpy() {
 		givenFileHierarchyAssert();
-		whenContainsFileInPath("file11", ImmutableList.<String>of(), "dir1");
+		whenContainsFileWithContentInPath("file11", ImmutableList.<String>of(), "dir1");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 				"to contain lines:\n <no lines>,\n" +
 				"but it contains:\n <file11>\n", preparePath("dir1", "file11")));
 	}
 
-	private void whenContainsFileInPath(String fileName, List<String> content, String... dirPath) {
+	private void whenContainsFileWithContentInPath(String fileName, List<String> content, String... dirPath) {
 		try {
 			fileHierarchyAssert.containsFileWithContentInPath(fileName, content, dirPath);
 		} catch (AssertionError e) {
