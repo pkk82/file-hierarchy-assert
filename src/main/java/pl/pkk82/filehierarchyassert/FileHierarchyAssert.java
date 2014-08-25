@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -26,7 +24,6 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.Condition;
 
 import pl.pkk82.filehierarchygenerator.FileHierarchy;
 
@@ -93,7 +90,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert hasRootDirWithName(final String rootDirName, final StringMatcher rootDirNameMatcher) {
-		then(actual.getRootDirectoryAsFile()).has(new FileNameCondition(rootDirName, rootDirNameMatcher));
+		then(actual.getRootDirectoryAsFile()).has(new IOFileFilterCondition(rootDirName, rootDirNameMatcher));
 		return this;
 	}
 
@@ -105,7 +102,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	public FileHierarchyAssert hasParentDirWithName(final String parentDirName,
 			final StringMatcher parentDirNameMatcher) {
 		then(actual.getRootDirectoryAsFile().getParentFile())
-				.has(new FileNameCondition(parentDirName, parentDirNameMatcher));
+				.has(new IOFileFilterCondition(parentDirName, parentDirNameMatcher));
 		return this;
 	}
 
@@ -176,7 +173,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	public FileHierarchyAssert containsSubdir(String dirName, StringMatcher dirNameMatcher, String... dirPath) {
 		File searchDir = calculateDirFile(dirPath);
 		IOFileFilter searchFilter = DirectoryFileFilter.INSTANCE;
-		FileFilter dirFilter = new AndFileFilter(searchFilter, new FileNameCondition(dirName, dirNameMatcher));
+		FileFilter dirFilter = new AndFileFilter(searchFilter, new IOFileFilterCondition(dirName, dirNameMatcher));
 		List<File> candidates = Arrays.asList(searchDir.listFiles((FileFilter) searchFilter));
 		List<File> result = Arrays.asList(searchDir.listFiles(dirFilter));
 		then(result.size())
@@ -197,7 +194,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	public FileHierarchyAssert containsFile(String fileName, StringMatcher fileNameMatcher, String... dirPath) {
 		File searchDir = calculateDirFile(dirPath);
 		IOFileFilter searchFilter = FileFileFilter.FILE;
-		FileFilter fileFilter = new AndFileFilter(searchFilter, new FileNameCondition(fileName, fileNameMatcher));
+		FileFilter fileFilter = new AndFileFilter(searchFilter, new IOFileFilterCondition(fileName, fileNameMatcher));
 		List<File> candidates = Arrays.asList(searchDir.listFiles((FileFilter) searchFilter));
 		List<File> result = Arrays.asList(searchDir.listFiles(fileFilter));
 		then(result.size())
@@ -257,7 +254,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	private static List<Path> findDirs(Path dir, String dirName, StringMatcher nameMatcher) {
 		File[] files = dir.toFile().listFiles((FileFilter) new AndFileFilter(DirectoryFileFilter.INSTANCE,
-				new FileNameCondition(dirName, nameMatcher)));
+				new IOFileFilterCondition(dirName, nameMatcher)));
 		return Lists.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
 	}
 
@@ -377,30 +374,4 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 
-	private static class FileNameCondition extends Condition<File> implements IOFileFilter {
-		private final String rootDirName;
-		private final StringMatcher stringMatcher;
-
-		public FileNameCondition(String rootDirName, StringMatcher stringMatcher) {
-			super("file name: " + rootDirName);
-			this.rootDirName = rootDirName;
-			this.stringMatcher = stringMatcher;
-		}
-
-		@Override
-		public boolean matches(File value) {
-			Matcher matcher = Pattern.compile(stringMatcher.toRegex(rootDirName)).matcher(value.getName());
-			return matcher.matches();
-		}
-
-		@Override
-		public boolean accept(File pathname) {
-			return matches(pathname);
-		}
-
-		@Override
-		public boolean accept(File dir, String name) {
-			return accept(new File(dir, name));
-		}
-	}
 }
