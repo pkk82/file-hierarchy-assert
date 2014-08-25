@@ -230,7 +230,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 
-	private List<Path> findDirsRecursively(List<Path> dirs) {
+	private static List<Path> findDirsRecursively(List<Path> dirs) {
 		List<Path> foundedDirs = new ArrayList<>();
 		for (Path dir : dirs) {
 			foundedDirs.addAll(Lists.transform(Lists.newArrayList(FileUtils.listFilesAndDirs(dir.toFile(),
@@ -239,23 +239,23 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return foundedDirs;
 	}
 
-	private Collection<File> findSubdirsRecursively(File rootDir) {
+	private static Collection<File> findSubdirsRecursively(File rootDir) {
 		Collection<File> directories = FileUtils.listFilesAndDirs(rootDir, FalseFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
 		directories.remove(rootDir);
 		return directories;
 	}
 
-	private Collection<File> findFilesRecursively(File rootDir) {
+	private static Collection<File> findFilesRecursively(File rootDir) {
 		return FileUtils.listFiles(rootDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 	}
 
-	private Collection<File> findFilesAndDirsRecursively(File rootDir) {
+	private static Collection<File> findFilesAndDirsRecursively(File rootDir) {
 		return FileUtils.listFilesAndDirs(rootDir, TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
 	}
 
-	private List<Path> findDirs(Path dir, String dirName, StringMatcher nameMatcher) {
+	private static List<Path> findDirs(Path dir, String dirName, StringMatcher nameMatcher) {
 		File[] files = dir.toFile().listFiles((FileFilter) new AndFileFilter(DirectoryFileFilter.INSTANCE,
 				new FileNameCondition(dirName, nameMatcher)));
 		return Lists.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
