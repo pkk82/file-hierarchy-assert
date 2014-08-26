@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.io.FileUtils;
@@ -24,6 +25,14 @@ public class PathUtils {
 			return input.toPath();
 		}
 	};
+	private static final Function<Path, File> FUNCTION_PATH_2_FILE = new Function<Path, File>() {
+
+		@Override
+		public File apply(Path input) {
+			return input.toFile();
+		}
+	};
+
 
 	static List<Path> findDirsRecursively(List<Path> dirs) {
 		List<Path> foundedDirs = new ArrayList<>();
@@ -45,9 +54,8 @@ public class PathUtils {
 		return FileUtils.listFiles(rootDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 	}
 
-	static Collection<File> findFilesAndDirsRecursively(File rootDir) {
-		return FileUtils.listFilesAndDirs(rootDir, TrueFileFilter.INSTANCE,
-				TrueFileFilter.INSTANCE);
+	static Collection<Path> findFilesAndDirsRecursively(Path dir) {
+		return toPaths(findFilesAndDirsRecursively(dir.toFile()));
 	}
 
 	static List<Path> findDirs(Path dir, String dirName, StringMatcher nameMatcher) {
@@ -55,4 +63,18 @@ public class PathUtils {
 				new IOFileFilterCondition(dirName, nameMatcher)));
 		return Lists.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
 	}
+
+	static Collection<File> toFiles(Collection<Path> paths) {
+		return Collections2.transform(paths, FUNCTION_PATH_2_FILE);
+	}
+
+	private static Collection<Path> toPaths(Collection<File> files) {
+		return Collections2.transform(files, FUNCTION_FILE_2_PATH);
+	}
+
+	private static Collection<File> findFilesAndDirsRecursively(File dir) {
+		return FileUtils.listFilesAndDirs(dir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+	}
+
+
 }

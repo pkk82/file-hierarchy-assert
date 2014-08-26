@@ -98,12 +98,13 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert hasCountOfFilesAndDirs(int count, String... dirPath) {
-		Collection<File> files = PathUtils.findFilesAndDirsRecursively(calculateDirFile(dirPath));
-		then(files)
+		Collection<Path> filesAndDirs = PathUtils.findFilesAndDirsRecursively(calculateDir(dirPath));
+		then(filesAndDirs)
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
 						descPath(actual.getRootDirectoryAsPath()),
 						descCount(count, DESC_FILE_AND_DIR_SING, DESC_FILE_AND_DIR_PLURAL),
-						descCountWithDetails(files, DESC_FILE_AND_DIR_SING, DESC_FILE_AND_DIR_PLURAL))
+						descCountWithDetails(PathUtils.toFiles(filesAndDirs),
+								DESC_FILE_AND_DIR_SING, DESC_FILE_AND_DIR_PLURAL))
 				.hasSize(count);
 		return this;
 	}
@@ -218,7 +219,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 
-	private Path calculateDirPath(String... dirPath) {
+	private Path calculateDir(String... dirPath) {
 		Path actualPath = actual.getRootDirectoryAsPath();
 		then(actualPath.toFile())
 				.overridingErrorMessage("\nExpecting:\n%s\nto be an existing directory\n",
@@ -265,7 +266,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	private File calculateDirFile(String... dirPath) {
-		return calculateDirPath(dirPath).toFile();
+		return calculateDir(dirPath).toFile();
 	}
 
 	private String descCountWithDetails(Collection<File> files, String descSingular, String descPlural) {
