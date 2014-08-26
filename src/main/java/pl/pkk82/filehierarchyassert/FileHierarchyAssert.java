@@ -168,15 +168,15 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert containsFile(String fileName, StringMatcher fileNameMatcher, String... dirPath) {
-		File searchDir = calculateDirFile(dirPath);
-		FileFilter fileFilter = new IOFileFilterCondition(fileName, fileNameMatcher, FileFileFilter.FILE);
-		Collection<Path> candidates = PathUtils.findFiles(searchDir.toPath());
-		List<File> result = Arrays.asList(searchDir.listFiles(fileFilter));
+		Path searchDir = calculateDir(dirPath);
+		Collection<Path> candidates = PathUtils.findFiles(searchDir);
+		Collection<Path> result = PathUtils.find(searchDir,
+				new IOFileFilterCondition(fileName, fileNameMatcher, FileFileFilter.FILE));
 		then(result.size())
 				.overridingErrorMessage("\nExpecting:\n%s\n" +
 								"to contain a file with a name %s to:\n%s,\n" +
 								"but it contains:\n%s\n",
-						descPath(searchDir.toPath()),
+						descPath(searchDir),
 						fileNameMatcher.getDescription(),
 						descName(fileName),
 						descPaths(candidates, " <no files>"))

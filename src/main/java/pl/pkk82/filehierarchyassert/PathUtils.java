@@ -40,6 +40,10 @@ public class PathUtils {
 		return toPaths(findSubdirsRecursively(dir.toFile()));
 	}
 
+	static Collection<Path> find(Path dir, FileFilter fileFilter) {
+		return toPaths(dir.toFile().listFiles(fileFilter));
+	}
+
 	static Collection<Path> findFiles(Path dir) {
 		return toPaths(dir.toFile().listFiles((FileFilter) FileFileFilter.FILE));
 	}
