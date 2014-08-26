@@ -123,13 +123,12 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	public FileHierarchyAssert hasCountOfDirs(int count, StringMatcher nameMatcher, String... dirPath) {
 		List<Path> dirs = calculateDirPath(nameMatcher, dirPath);
-		List<Path> foundedDirs = PathUtils.findDirsRecursively(dirs);
+		Collection<Path> foundedDirs = PathUtils.findDirsRecursively(dirs);
 		then(foundedDirs)
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
 						descPaths(Lists.transform(dirs, FUNCTION_PATH_2_FILE)),
 						descCount(count, DESC_DIR_SING, DESC_DIR_PLURAL),
-						descCountWithDetails(Lists.transform(foundedDirs, FUNCTION_PATH_2_FILE), DESC_DIR_SING,
-								DESC_DIR_PLURAL))
+						descCountWithDetails(PathUtils.toFiles(foundedDirs), DESC_DIR_SING, DESC_DIR_PLURAL))
 				.hasSize(count);
 		return this;
 	}

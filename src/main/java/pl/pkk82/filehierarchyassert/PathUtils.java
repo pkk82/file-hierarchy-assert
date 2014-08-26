@@ -34,11 +34,10 @@ public class PathUtils {
 	};
 
 
-	static List<Path> findDirsRecursively(List<Path> dirs) {
+	static Collection<Path> findDirsRecursively(Collection<Path> dirs) {
 		List<Path> foundedDirs = new ArrayList<>();
 		for (Path dir : dirs) {
-			foundedDirs.addAll(Lists.transform(Lists.newArrayList(FileUtils.listFilesAndDirs(dir.toFile(),
-					FalseFileFilter.FALSE, TrueFileFilter.INSTANCE)), FUNCTION_FILE_2_PATH));
+			foundedDirs.addAll(toPaths(findDirsRecursively(dir.toFile())));
 		}
 		return foundedDirs;
 	}
@@ -67,6 +66,10 @@ public class PathUtils {
 
 	private static Collection<Path> toPaths(Collection<File> files) {
 		return Collections2.transform(files, FUNCTION_FILE_2_PATH);
+	}
+
+	private static Collection<File> findDirsRecursively(File dir) {
+		return FileUtils.listFilesAndDirs(dir, FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 	}
 
 	private static Collection<File> findSubdirsRecursively(File dir) {
