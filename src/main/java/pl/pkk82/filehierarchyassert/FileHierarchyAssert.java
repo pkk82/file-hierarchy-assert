@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
@@ -186,11 +185,11 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	public FileHierarchyAssert containsFileWithContent(String fileName, List<String> content, String... dirPath) {
 		containsFile(fileName, StringMatcher.STANDARD, dirPath);
-		File file = new File(calculateDirFile(dirPath), fileName);
 		try {
-			List<String> lines = FileUtils.readLines(file);
+			Path file = calculateDir(dirPath).resolve(fileName);
+			List<String> lines = PathUtils.readLines(file);
 			then(lines).overridingErrorMessage("\nExpecting:\n%s\nto contain lines:\n%s,\nbut it contains:\n%s\n",
-					descPath(file.toPath()),
+					descPath(file),
 					descLines(content, " <no lines>"),
 					descLines(lines, " <no lines>"))
 					.isEqualTo(content);
@@ -244,11 +243,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 			}
 			return all;
 		}
-	}
-
-
-	private File calculateDirFile(String... dirPath) {
-		return calculateDir(dirPath).toFile();
 	}
 
 	private String descCountWithDetails(Collection<Path> files, String descSingular, String descPlural) {

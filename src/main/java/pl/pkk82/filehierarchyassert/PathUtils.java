@@ -2,6 +2,7 @@ package pl.pkk82.filehierarchyassert;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +27,10 @@ public class PathUtils {
 			return input.toPath();
 		}
 	};
+
+	static List<String> readLines(Path path) throws IOException {
+		return FileUtils.readLines(path.toFile());
+	}
 
 
 	static Collection<Path> findDirsRecursively(Collection<Path> dirs) {
