@@ -151,7 +151,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	public FileHierarchyAssert containsSubdir(String dirName, StringMatcher dirNameMatcher, String... dirPath) {
 		File searchDir = calculateDirFile(dirPath);
-		IOFileFilter searchFilter = DirectoryFileFilter.INSTANCE;
+		IOFileFilter searchFilter = DirectoryFileFilter.DIRECTORY;
 		FileFilter dirFilter = new AndFileFilter(searchFilter, new IOFileFilterCondition(dirName, dirNameMatcher));
 		Collection<Path> candidates = PathUtils.findSubdirs(searchDir.toPath());
 		List<File> result = Arrays.asList(searchDir.listFiles(dirFilter));

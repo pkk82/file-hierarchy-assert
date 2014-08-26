@@ -57,7 +57,7 @@ public class PathUtils {
 	}
 
 	static List<Path> findDirs(Path dir, String dirName, StringMatcher nameMatcher) {
-		File[] files = dir.toFile().listFiles((FileFilter) new AndFileFilter(DirectoryFileFilter.INSTANCE,
+		File[] files = dir.toFile().listFiles((FileFilter) new AndFileFilter(DirectoryFileFilter.DIRECTORY,
 				new IOFileFilterCondition(dirName, nameMatcher)));
 		return Lists.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
 	}
@@ -71,22 +71,22 @@ public class PathUtils {
 	}
 
 	private static Collection<File> findDirsRecursively(File dir) {
-		return FileUtils.listFilesAndDirs(dir, FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		return FileUtils.listFilesAndDirs(dir, FalseFileFilter.FALSE, TrueFileFilter.TRUE);
 	}
 
 	private static Collection<File> findSubdirsRecursively(File dir) {
-		Collection<File> directories = FileUtils.listFilesAndDirs(dir, FalseFileFilter.INSTANCE,
-				TrueFileFilter.INSTANCE);
+		Collection<File> directories = FileUtils.listFilesAndDirs(dir, FalseFileFilter.FALSE,
+				TrueFileFilter.TRUE);
 		directories.remove(dir);
 		return directories;
 	}
 
 	private static Collection<File> findFilesRecursively(File dir) {
-		return FileUtils.listFiles(dir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		return FileUtils.listFiles(dir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
 	}
 
 	private static Collection<File> findFilesAndDirsRecursively(File dir) {
-		return FileUtils.listFilesAndDirs(dir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		return FileUtils.listFilesAndDirs(dir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
 	}
 
 
