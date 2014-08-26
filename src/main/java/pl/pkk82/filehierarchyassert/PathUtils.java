@@ -43,11 +43,8 @@ public class PathUtils {
 		return foundedDirs;
 	}
 
-	static Collection<File> findSubdirsRecursively(File rootDir) {
-		Collection<File> directories = FileUtils.listFilesAndDirs(rootDir, FalseFileFilter.INSTANCE,
-				TrueFileFilter.INSTANCE);
-		directories.remove(rootDir);
-		return directories;
+	static Collection<Path> findSubdirsRecursively(Path dir) {
+		return toPaths(findSubdirsRecursively(dir.toFile()));
 	}
 
 	static Collection<Path> findFilesRecursively(Path dir) {
@@ -70,6 +67,13 @@ public class PathUtils {
 
 	private static Collection<Path> toPaths(Collection<File> files) {
 		return Collections2.transform(files, FUNCTION_FILE_2_PATH);
+	}
+
+	private static Collection<File> findSubdirsRecursively(File dir) {
+		Collection<File> directories = FileUtils.listFilesAndDirs(dir, FalseFileFilter.INSTANCE,
+				TrueFileFilter.INSTANCE);
+		directories.remove(dir);
+		return directories;
 	}
 
 	private static Collection<File> findFilesRecursively(File dir) {

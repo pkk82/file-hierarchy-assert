@@ -136,12 +136,12 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert hasCountOfSubdirs(int count, String... dirPath) {
-		Collection<File> files = PathUtils.findSubdirsRecursively(calculateDirFile(dirPath));
-		then(files)
+		Collection<Path> subdirs = PathUtils.findSubdirsRecursively(calculateDir(dirPath));
+		then(subdirs)
 				.overridingErrorMessage(String.format("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
 						descPath(actual.getRootDirectoryAsPath()),
 						descCount(count, DESC_DIR_SING, DESC_DIR_PLURAL),
-						descCountWithDetails(files, DESC_DIR_SING, DESC_DIR_PLURAL)))
+						descCountWithDetails(PathUtils.toFiles(subdirs), DESC_DIR_SING, DESC_DIR_PLURAL)))
 				.hasSize(count);
 		return this;
 	}
