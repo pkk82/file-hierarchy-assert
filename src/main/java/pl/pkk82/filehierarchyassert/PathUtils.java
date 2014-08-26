@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 public class PathUtils {
@@ -23,13 +24,6 @@ public class PathUtils {
 		@Override
 		public Path apply(File input) {
 			return input.toPath();
-		}
-	};
-	private static final Function<Path, File> FUNCTION_PATH_2_FILE = new Function<Path, File>() {
-
-		@Override
-		public File apply(Path input) {
-			return input.toFile();
 		}
 	};
 
@@ -46,6 +40,14 @@ public class PathUtils {
 		return toPaths(findSubdirsRecursively(dir.toFile()));
 	}
 
+	static Collection<Path> findFiles(Path dir) {
+		return toPaths(dir.toFile().listFiles((FileFilter) FileFileFilter.FILE));
+	}
+
+	static Collection<Path> findSubdirs(Path dir) {
+		return toPaths(dir.toFile().listFiles((FileFilter) DirectoryFileFilter.DIRECTORY));
+	}
+
 	static Collection<Path> findFilesRecursively(Path dir) {
 		return toPaths(findFilesRecursively(dir.toFile()));
 	}
@@ -60,12 +62,12 @@ public class PathUtils {
 		return Lists.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
 	}
 
-	static Collection<File> toFiles(Collection<Path> paths) {
-		return Collections2.transform(paths, FUNCTION_PATH_2_FILE);
-	}
-
 	private static Collection<Path> toPaths(Collection<File> files) {
 		return Collections2.transform(files, FUNCTION_FILE_2_PATH);
+	}
+
+	private static Collection<Path> toPaths(File... files) {
+		return Collections2.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
 	}
 
 	private static Collection<File> findDirsRecursively(File dir) {
