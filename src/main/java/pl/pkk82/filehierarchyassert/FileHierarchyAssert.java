@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.BDDAssertions.then;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -148,14 +147,14 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert containsSubdir(String dirName, StringMatcher dirNameMatcher, String... dirPath) {
-		File searchDir = calculateDirFile(dirPath);
-		FileFilter dirFilter = new IOFileFilterCondition(dirName, dirNameMatcher, DirectoryFileFilter.DIRECTORY);
-		Collection<Path> candidates = PathUtils.findSubdirs(searchDir.toPath());
-		List<File> result = Arrays.asList(searchDir.listFiles(dirFilter));
+		Path searchDir = calculateDir(dirPath);
+		Collection<Path> candidates = PathUtils.findSubdirs(searchDir);
+		Collection<Path> result = PathUtils.find(searchDir,
+				new IOFileFilterCondition(dirName, dirNameMatcher, DirectoryFileFilter.DIRECTORY));
 		then(result.size())
 				.overridingErrorMessage("\nExpecting:\n%s\n" +
 								"to contain a directory with a name %s to:\n%s,\n" +
-								"but it contains:\n%s\n", descPath(searchDir.toPath()),
+								"but it contains:\n%s\n", descPath(searchDir),
 						dirNameMatcher.getDescription(),
 						descName(dirName),
 						descPaths(candidates, " <no directories>"))
