@@ -8,19 +8,25 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.assertj.core.api.Condition;
 
 class IOFileFilterCondition extends Condition<File> implements IOFileFilter {
-	private final String rootDirName;
+	private final String fileName;
 	private final StringMatcher stringMatcher;
+	private final IOFileFilter additionalFilter;
 
-	public IOFileFilterCondition(String rootDirName, StringMatcher stringMatcher) {
-		super("file name: " + rootDirName);
-		this.rootDirName = rootDirName;
-		this.stringMatcher = stringMatcher;
+	public IOFileFilterCondition(String fileName, StringMatcher nameMatcher, IOFileFilter additionalFilter) {
+		super("file name: " + fileName);
+		this.fileName = fileName;
+		this.stringMatcher = nameMatcher;
+		this.additionalFilter = additionalFilter;
+	}
+
+	public IOFileFilterCondition(String dirName, StringMatcher nameMatcher) {
+		this(dirName, nameMatcher, null);
 	}
 
 	@Override
 	public boolean matches(File value) {
-		Matcher matcher = Pattern.compile(stringMatcher.toRegex(rootDirName)).matcher(value.getName());
-		return matcher.matches();
+		Matcher matcher = Pattern.compile(stringMatcher.toRegex(fileName)).matcher(value.getName());
+		return matcher.matches() && (additionalFilter == null || additionalFilter.accept(value));
 	}
 
 	@Override

@@ -13,10 +13,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.assertj.core.api.AbstractAssert;
 
@@ -151,8 +149,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	public FileHierarchyAssert containsSubdir(String dirName, StringMatcher dirNameMatcher, String... dirPath) {
 		File searchDir = calculateDirFile(dirPath);
-		IOFileFilter searchFilter = DirectoryFileFilter.DIRECTORY;
-		FileFilter dirFilter = new AndFileFilter(searchFilter, new IOFileFilterCondition(dirName, dirNameMatcher));
+		FileFilter dirFilter = new IOFileFilterCondition(dirName, dirNameMatcher, DirectoryFileFilter.DIRECTORY);
 		Collection<Path> candidates = PathUtils.findSubdirs(searchDir.toPath());
 		List<File> result = Arrays.asList(searchDir.listFiles(dirFilter));
 		then(result.size())
@@ -172,8 +169,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	public FileHierarchyAssert containsFile(String fileName, StringMatcher fileNameMatcher, String... dirPath) {
 		File searchDir = calculateDirFile(dirPath);
-		IOFileFilter searchFilter = FileFileFilter.FILE;
-		FileFilter fileFilter = new AndFileFilter(searchFilter, new IOFileFilterCondition(fileName, fileNameMatcher));
+		FileFilter fileFilter = new IOFileFilterCondition(fileName, fileNameMatcher, FileFileFilter.FILE);
 		Collection<Path> candidates = PathUtils.findFiles(searchDir.toPath());
 		List<File> result = Arrays.asList(searchDir.listFiles(fileFilter));
 		then(result.size())
