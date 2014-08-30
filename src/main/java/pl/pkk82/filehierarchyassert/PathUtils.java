@@ -32,11 +32,16 @@ public class PathUtils {
 		return FileUtils.readLines(path.toFile());
 	}
 
+	/* Find recursively */
+
+	static Collection<Path> findDirsRecursively(Path dir) {
+		return toPaths(findDirsRecursively(dir.toFile()));
+	}
 
 	static Collection<Path> findDirsRecursively(Collection<Path> dirs) {
 		List<Path> foundedDirs = new ArrayList<>();
 		for (Path dir : dirs) {
-			foundedDirs.addAll(toPaths(findDirsRecursively(dir.toFile())));
+			foundedDirs.addAll(findDirsRecursively(dir));
 		}
 		return foundedDirs;
 	}
@@ -45,16 +50,16 @@ public class PathUtils {
 		return toPaths(findSubdirsRecursively(dir.toFile()));
 	}
 
-	static Collection<Path> find(Path dir, FileFilter fileFilter) {
-		return toPaths(dir.toFile().listFiles(fileFilter));
+	static Collection<Path> findSubdirsRecursively(Collection<Path> dirs) {
+		List<Path> foundedDirs = new ArrayList<>();
+		for (Path dir : dirs) {
+			foundedDirs.addAll(findSubdirsRecursively(dir));
+		}
+		return foundedDirs;
 	}
 
-	static Collection<Path> findFiles(Path dir) {
-		return toPaths(dir.toFile().listFiles((FileFilter) FileFileFilter.FILE));
-	}
-
-	static Collection<Path> findSubdirs(Path dir) {
-		return toPaths(dir.toFile().listFiles((FileFilter) DirectoryFileFilter.DIRECTORY));
+	static Collection<Path> findFilesRecursively(Path dir) {
+		return toPaths(findFilesRecursively(dir.toFile()));
 	}
 
 	static Collection<Path> findFilesRecursively(Collection<Path> dirs) {
@@ -65,8 +70,8 @@ public class PathUtils {
 		return foundedDirs;
 	}
 
-	static Collection<Path> findFilesRecursively(Path dir) {
-		return toPaths(findFilesRecursively(dir.toFile()));
+	static Collection<Path> findFilesAndDirsRecursively(Path dir) {
+		return toPaths(findFilesAndDirsRecursively(dir.toFile()));
 	}
 
 	static Collection<Path> findFilesAndDirsRecursively(Collection<Path> dirs) {
@@ -77,31 +82,34 @@ public class PathUtils {
 		return foundedDirs;
 	}
 
-	static Collection<Path> findFilesAndDirsRecursively(Path dir) {
-		return toPaths(findFilesAndDirsRecursively(dir.toFile()));
+	/* Find in directory */
+
+	static Collection<Path> findFiles(Path dir) {
+		return toPaths(dir.toFile().listFiles((FileFilter) FileFileFilter.FILE));
 	}
 
-	static List<Path> findDirs(Path dir, String dirName, StringMatcher nameMatcher) {
+	static Collection<Path> find(Path dir, FileFilter fileFilter) {
+		return toPaths(dir.toFile().listFiles(fileFilter));
+	}
+
+	static Collection<Path> findSubdirs(Path dir) {
+		return toPaths(dir.toFile().listFiles((FileFilter) DirectoryFileFilter.DIRECTORY));
+	}
+
+	static Collection<Path> findSubdirs(Path dir, String dirName, StringMatcher nameMatcher) {
 		File[] files = dir.toFile().listFiles((FileFilter) new AndFileFilter(DirectoryFileFilter.DIRECTORY,
 				new IOFileFilterCondition(dirName, nameMatcher)));
 		return Lists.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
 	}
 
-	private static Collection<Path> toPaths(Collection<File> files) {
-		return Collections2.transform(files, FUNCTION_FILE_2_PATH);
-	}
-
-	private static Collection<Path> toPaths(File... files) {
-		return Collections2.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
-	}
+	/* Find recursively based on file */
 
 	private static Collection<File> findDirsRecursively(File dir) {
 		return FileUtils.listFilesAndDirs(dir, FalseFileFilter.FALSE, TrueFileFilter.TRUE);
 	}
 
 	private static Collection<File> findSubdirsRecursively(File dir) {
-		Collection<File> directories = FileUtils.listFilesAndDirs(dir, FalseFileFilter.FALSE,
-				TrueFileFilter.TRUE);
+		Collection<File> directories = FileUtils.listFilesAndDirs(dir, FalseFileFilter.FALSE, TrueFileFilter.TRUE);
 		directories.remove(dir);
 		return directories;
 	}
@@ -112,6 +120,16 @@ public class PathUtils {
 
 	private static Collection<File> findFilesAndDirsRecursively(File dir) {
 		return FileUtils.listFilesAndDirs(dir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
+	}
+
+	/* Conversion from files to paths methods */
+
+	private static Collection<Path> toPaths(Collection<File> files) {
+		return Collections2.transform(files, FUNCTION_FILE_2_PATH);
+	}
+
+	private static Collection<Path> toPaths(File... files) {
+		return Collections2.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
 	}
 
 
