@@ -57,6 +57,14 @@ public class PathUtils {
 		return toPaths(dir.toFile().listFiles((FileFilter) DirectoryFileFilter.DIRECTORY));
 	}
 
+	static Collection<Path> findFilesRecursively(Collection<Path> dirs) {
+		List<Path> foundedDirs = new ArrayList<>();
+		for (Path dir : dirs) {
+			foundedDirs.addAll(findFilesRecursively(dir));
+		}
+		return foundedDirs;
+	}
+
 	static Collection<Path> findFilesRecursively(Path dir) {
 		return toPaths(findFilesRecursively(dir.toFile()));
 	}
