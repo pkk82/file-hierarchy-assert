@@ -1,7 +1,5 @@
 package pl.pkk82.filehierarchyassert;
 
-import static org.assertj.core.api.BDDAssertions.then;
-
 import org.junit.Test;
 
 public class FileHierarchyAssertHasCountOfSubdirsTest extends AbstractFileHiearchyAssertTest {
@@ -84,7 +82,7 @@ public class FileHierarchyAssertHasCountOfSubdirsTest extends AbstractFileHiearc
 		try {
 			fileHierarchyAssert.hasCountOfSubdirs(count, path);
 		} catch (AssertionError e) {
-			throwableAssert = then(e).describedAs(e.getMessage());
+			handleAssertionError(e);
 		}
 	}
 }

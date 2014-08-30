@@ -1,7 +1,5 @@
 package pl.pkk82.filehierarchyassert;
 
-import static org.assertj.core.api.BDDAssertions.then;
-
 import org.junit.Test;
 
 public class FileHierarchyAssertHasCountOfDirsRegexTest extends AbstractFileHiearchyAssertTest {
@@ -60,7 +58,7 @@ public class FileHierarchyAssertHasCountOfDirsRegexTest extends AbstractFileHiea
 		try {
 			fileHierarchyAssert.hasCountOfDirs(count, path);
 		} catch (AssertionError e) {
-			throwableAssert = then(e).describedAs(e.getMessage());
+			handleAssertionError(e);
 		}
 	}
 
@@ -68,7 +66,7 @@ public class FileHierarchyAssertHasCountOfDirsRegexTest extends AbstractFileHiea
 		try {
 			fileHierarchyAssert.hasCountOfDirs(count, StringMatcher.REGEX, path);
 		} catch (AssertionError e) {
-			throwableAssert = then(e).describedAs(e.getMessage());
+			handleAssertionError(e);
 		}
 	}
 }

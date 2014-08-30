@@ -1,7 +1,5 @@
 package pl.pkk82.filehierarchyassert;
 
-import static org.assertj.core.api.BDDAssertions.then;
-
 import org.junit.Test;
 
 public class FileHierarchyAssertContainsFileTest extends AbstractFileHiearchyAssertTest {
@@ -75,7 +73,7 @@ public class FileHierarchyAssertContainsFileTest extends AbstractFileHiearchyAss
 		try {
 			fileHierarchyAssert.containsFile(fileName, dirPath);
 		} catch (AssertionError e) {
-			throwableAssert = then(e);
+			handleAssertionError(e);
 		}
 	}
 
@@ -83,7 +81,7 @@ public class FileHierarchyAssertContainsFileTest extends AbstractFileHiearchyAss
 		try {
 			fileHierarchyAssert.containsFile(fileName, stringMatcher, dirPath);
 		} catch (AssertionError e) {
-			throwableAssert = then(e);
+			handleAssertionError(e);
 		}
 	}
 

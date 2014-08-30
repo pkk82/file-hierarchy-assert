@@ -1,7 +1,5 @@
 package pl.pkk82.filehierarchyassert;
 
-import static org.assertj.core.api.BDDAssertions.then;
-
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -55,7 +53,7 @@ public class FileHierarchyAssertContainsFileWithContentTest extends AbstractFile
 		try {
 			fileHierarchyAssert.containsFileWithContent(fileName, content, dirPath);
 		} catch (AssertionError e) {
-			throwableAssert = then(e);
+			handleAssertionError(e);
 		}
 	}
 

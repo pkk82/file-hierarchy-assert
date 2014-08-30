@@ -15,11 +15,11 @@ public class AbstractFileHiearchyAssertTest {
 
 	protected FileHierarchyGenerator fileHierarchyGenerator;
 	protected FileHierarchyAssert fileHierarchyAssert;
-	protected ThrowableAssert throwableAssert;
-
 	protected FileHierarchy fileHierarchy;
 	protected FileHierarchy fileHierarchyEmpty;
 	protected FileHierarchy fileHierarchyWithOneFile;
+
+	private ThrowableAssert throwableAssert;
 
 
 	protected void givenFileHierarchyEmptyAssert() {
@@ -108,9 +108,12 @@ public class AbstractFileHiearchyAssertTest {
 			return fileHierarchy;
 		} else if (fileHierarchyWithOneFile != null) {
 			return fileHierarchyWithOneFile;
-
 		} else {
 			return fileHierarchyEmpty;
 		}
+	}
+
+	protected void handleAssertionError(AssertionError e) {
+		throwableAssert = then(e).describedAs(e.getMessage());
 	}
 }

@@ -1,7 +1,5 @@
 package pl.pkk82.filehierarchyassert;
 
-import static org.assertj.core.api.BDDAssertions.then;
-
 import org.junit.Test;
 
 public class FileHierarchyAssertHasRootDirWithNameTest extends AbstractFileHiearchyAssertTest {
@@ -56,7 +54,7 @@ public class FileHierarchyAssertHasRootDirWithNameTest extends AbstractFileHiear
 		try {
 			fileHierarchyAssert.hasRootDirWithName(rootDirName);
 		} catch (AssertionError e) {
-			throwableAssert = then(e);
+			handleAssertionError(e);
 		}
 	}
 
@@ -64,7 +62,7 @@ public class FileHierarchyAssertHasRootDirWithNameTest extends AbstractFileHiear
 		try {
 			fileHierarchyAssert.hasRootDirWithName(rootDirName, stringMatcher);
 		} catch (AssertionError e) {
-			throwableAssert = then(e);
+			handleAssertionError(e);
 		}
 	}
 
