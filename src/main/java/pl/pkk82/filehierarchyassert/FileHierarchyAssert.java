@@ -30,11 +30,11 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	private static final String DESC_FILE_AND_DIR_SING = "file/directory";
 	private static final String DESC_FILE_AND_DIR_PLURAL = "files/directories";
 
-	private final StringMatcher stringMatcher;
+	private final StringMatcher nameMatcher;
 
-	public FileHierarchyAssert(FileHierarchy actual, StringMatcher stringMatcher) {
+	public FileHierarchyAssert(FileHierarchy actual, StringMatcher nameMatcher) {
 		super(actual, FileHierarchyAssert.class);
-		this.stringMatcher = stringMatcher;
+		this.nameMatcher = nameMatcher;
 		exists();
 	}
 
@@ -42,8 +42,8 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		this(actual, StringMatcher.STANDARD);
 	}
 
-	public FileHierarchyAssert(File actual, StringMatcher stringMatcher) {
-		this(actual == null ? null : new FileHierarchy(actual.toPath()), stringMatcher);
+	public FileHierarchyAssert(File actual, StringMatcher nameMatcher) {
+		this(actual == null ? null : new FileHierarchy(actual.toPath()), nameMatcher);
 	}
 
 
@@ -51,8 +51,8 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		this(actual, StringMatcher.STANDARD);
 	}
 
-	public FileHierarchyAssert(Path actual, StringMatcher stringMatcher) {
-		this(actual == null ? null : new FileHierarchy(actual), stringMatcher);
+	public FileHierarchyAssert(Path actual, StringMatcher nameMatcher) {
+		this(actual == null ? null : new FileHierarchy(actual), nameMatcher);
 	}
 
 
@@ -62,7 +62,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert hasRootDirWithName(final String rootDirName) {
-		return hasRootDirWithName(rootDirName, stringMatcher);
+		return hasRootDirWithName(rootDirName, nameMatcher);
 	}
 
 	public FileHierarchyAssert hasRootDirWithName(final String rootDirName, final StringMatcher rootDirNameMatcher) {
@@ -72,7 +72,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert hasParentDirWithName(final String parentDirName) {
-		return hasParentDirWithName(parentDirName, this.stringMatcher);
+		return hasParentDirWithName(parentDirName, nameMatcher);
 	}
 
 	public FileHierarchyAssert hasParentDirWithName(final String parentDirName,
@@ -83,7 +83,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert hasCountOfFilesAndDirs(int count, String... dirPath) {
-		return hasCountOfFilesAndDirs(count, stringMatcher, dirPath);
+		return hasCountOfFilesAndDirs(count, nameMatcher, dirPath);
 	}
 
 	public FileHierarchyAssert hasCountOfFilesAndDirs(int count, StringMatcher nameMatcher, String... dirPath) {
@@ -100,7 +100,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert hasCountOfDirs(int count, String... dirPath) {
-		return hasCountOfDirs(count, stringMatcher, dirPath);
+		return hasCountOfDirs(count, nameMatcher, dirPath);
 	}
 
 	public FileHierarchyAssert hasCountOfDirs(int count, StringMatcher nameMatcher, String... dirPath) {
@@ -116,7 +116,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert hasCountOfSubdirs(int count, String... dirPath) {
-		return hasCountOfSubdirs(count, stringMatcher, dirPath);
+		return hasCountOfSubdirs(count, nameMatcher, dirPath);
 	}
 
 	public FileHierarchyAssert hasCountOfSubdirs(int count, StringMatcher nameMatcher, String... dirPath) {
@@ -132,7 +132,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert hasCountOfFiles(int count, String... dirPath) {
-		return hasCountOfFiles(count, stringMatcher, dirPath);
+		return hasCountOfFiles(count, nameMatcher, dirPath);
 	}
 
 	public FileHierarchyAssert hasCountOfFiles(int count, StringMatcher nameMatcher, String... dirPath) {
@@ -147,7 +147,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert containsSubdir(String dirName, String... dirPath) {
-		return containsSubdir(dirName, stringMatcher, dirPath);
+		return containsSubdir(dirName, nameMatcher, dirPath);
 	}
 
 	public FileHierarchyAssert containsSubdir(String dirName, StringMatcher dirNameMatcher, String... dirPath) {
@@ -168,7 +168,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert containsFile(String fileName, String... dirPath) {
-		return containsFile(fileName, stringMatcher, dirPath);
+		return containsFile(fileName, nameMatcher, dirPath);
 	}
 
 	public FileHierarchyAssert containsFile(String fileName, StringMatcher fileNameMatcher, String... dirPath) {
