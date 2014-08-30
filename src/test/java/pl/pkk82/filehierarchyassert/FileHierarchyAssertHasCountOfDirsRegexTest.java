@@ -8,21 +8,21 @@ public class FileHierarchyAssertHasCountOfDirsRegexTest extends AbstractFileHiea
 	@Test
 	public void shouldSuccedForOneLevelPath() {
 		givenFileHierarchyAssert(StringMatcher.REGEX);
-		whenHasCountOfDirs(9, "dir\\d");
+		whenHasCountOfDirs(10, "dir\\d");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSuccedForTwoLevel() {
 		givenFileHierarchyAssert(StringMatcher.REGEX);
-		whenHasCountOfDirs(5, "dir\\d", "dir\\d2");
+		whenHasCountOfDirs(6, "dir\\d", "dir\\d2");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSuccedForTwoLevelCombination() {
 		givenFileHierarchyAssert();
-		whenHasCountOfDirsRegex(7, "dir\\d", "dir\\d{2}");
+		whenHasCountOfDirsRegex(8, "dir\\d", "dir\\d{2}");
 		thenAssertionIsSucceeded();
 	}
 
@@ -31,7 +31,7 @@ public class FileHierarchyAssertHasCountOfDirsRegexTest extends AbstractFileHiea
 		givenFileHierarchyAssert();
 		whenHasCountOfDirsRegex(4, "dir\\d", "dir\\d2");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n <%s>\nto contain:\n <4> directories\n" +
-								"but contains:\n <5> directories\n <%s>\n <%s>\n <%s>\n <%s>\n <%s>\n",
+								"but contains:\n <6> directories\n <%s>\n <%s>\n <%s>\n <%s>\n <%s>\n <%s>\n",
 
 						preparePath("dir1", "dir12"),
 						preparePath("dir2", "dir22"),
@@ -40,7 +40,8 @@ public class FileHierarchyAssertHasCountOfDirsRegexTest extends AbstractFileHiea
 						preparePath("dir2", "dir22"),
 						preparePath("dir2", "dir22", "dir221"),
 						preparePath("dir2", "dir22", "dir221", "dir2211"),
-						preparePath("dir2", "dir22", "dir221", "dir2211", "dir22111"))
+						preparePath("dir2", "dir22", "dir221", "dir2211", "dir22111"),
+						preparePath("dir2", "dir22", "dir221", "dir2211", "dir22111", "dir221111"))
 		);
 	}
 

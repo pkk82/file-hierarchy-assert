@@ -40,7 +40,7 @@ public class FileHierarchyAssertHasCountOfFilesAndDirsTest extends AbstractFileH
 	@Test
 	public void shouldSuccedForRoot() {
 		givenFileHierarchyAssert();
-		whenHasCountOfFilesAndDirs(19);
+		whenHasCountOfFilesAndDirs(20);
 		thenAssertionIsSucceeded();
 	}
 
@@ -54,7 +54,7 @@ public class FileHierarchyAssertHasCountOfFilesAndDirsTest extends AbstractFileH
 	@Test
 	public void shouldSuccedForTwoLevel() {
 		givenFileHierarchyAssert();
-		whenHasCountOfFilesAndDirs(6, "dir2", "dir22", "dir221");
+		whenHasCountOfFilesAndDirs(7, "dir2", "dir22", "dir221");
 		thenAssertionIsSucceeded();
 	}
 

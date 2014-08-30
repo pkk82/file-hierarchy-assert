@@ -39,7 +39,7 @@ public class FileHierarchyAssertHasCountOfSubdirsTest extends AbstractFileHiearc
 	@Test
 	public void shouldSuccedForRoot() {
 		givenFileHierarchyAssert();
-		whenHasCountOfSubdirs(9);
+		whenHasCountOfSubdirs(10);
 		thenAssertionIsSucceeded();
 	}
 
@@ -53,7 +53,7 @@ public class FileHierarchyAssertHasCountOfSubdirsTest extends AbstractFileHiearc
 	@Test
 	public void shouldSuccedForTwoLevel() {
 		givenFileHierarchyAssert();
-		whenHasCountOfSubdirs(2, "dir2", "dir22", "dir221");
+		whenHasCountOfSubdirs(3, "dir2", "dir22", "dir221");
 		thenAssertionIsSucceeded();
 	}
 

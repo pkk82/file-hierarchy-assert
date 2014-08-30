@@ -31,18 +31,19 @@ With file hierarchy
                     |   file22112 // content lines: file22112, file22112, file22112, file22112
                     |
                     \---dir22111
+                        \---dir221111
 
 ```
 assertions are correct
 ```java
 fileHierarchyAssert.hasRootDirWithName("fileHierarchy");
-fileHierarchyAssert.hasCountOfSubdirs(9);
+fileHierarchyAssert.hasCountOfSubdirs(10);
 fileHierarchyAssert.hasCountOfSubdirs(2, "dir1");
 fileHierarchyAssert.hasCountOfFiles(9);
 fileHierarchyAssert.hasCountOfFiles(3, "dir2", "dir22", "dir221");
-fileHierarchyAssert.hasCountOfFilesAndDirs(19);
-fileHierarchyAssert.hasCountOfFilesAndDirs(1, "dir1", "dir11", "dir221");
-fileHierarchyAssert.containsSubdir("dir111", "dir1", "dir11");
+fileHierarchyAssert.hasCountOfFilesAndDirs(20);
+fileHierarchyAssert.hasCountOfFilesAndDirs(1, "dir1", "dir11");
+fileHierarchyAssert.containsSubdir("dir221", "dir2", "dir22");
 fileHierarchyAssert.containsFile("file11", "dir1");
 fileHierarchyAssert.containsFileWithContent("file212", Arrays.asList("file212", "file212"), "dir2", "dir21");
 ```

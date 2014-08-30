@@ -7,21 +7,21 @@ public class FileHierarchyAssertHasCountOfFilesAndDirsRegexTest extends Abstract
 	@Test
 	public void shouldSuccedForOneLevelPath() {
 		givenFileHierarchyAssert(StringMatcher.REGEX);
-		whenHasCountOfFilesAndDirs(16, "dir\\d");
+		whenHasCountOfFilesAndDirs(17, "dir\\d");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSuccedForTwoLevel() {
 		givenFileHierarchyAssert(StringMatcher.REGEX);
-		whenHasCountOfFilesAndDirs(9, "dir\\d", "dir\\d2");
+		whenHasCountOfFilesAndDirs(10, "dir\\d", "dir\\d2");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSuccedForTwoLevelCombination() {
 		givenFileHierarchyAssert();
-		whenHasCountOfFilesAndDirsRegex(13, "dir\\d", "dir\\d{2}");
+		whenHasCountOfFilesAndDirsRegex(14, "dir\\d", "dir\\d{2}");
 		thenAssertionIsSucceeded();
 	}
 
