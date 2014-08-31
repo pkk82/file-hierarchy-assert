@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
@@ -80,6 +81,16 @@ public class PathUtils {
 			foundedDirs.addAll(findFilesAndDirsRecursively(dir));
 		}
 		return foundedDirs;
+	}
+
+	static Collection<Path> findRecursively(Path dir, final FileFilter fileFilter) {
+		Collection<Path> filesAndDirsRecursively = findFilesAndDirsRecursively(dir);
+		return Collections2.filter(filesAndDirsRecursively, new Predicate<Path>() {
+			@Override
+			public boolean apply(Path input) {
+				return fileFilter.accept(input.toFile());
+			}
+		});
 	}
 
 	/* Find in directory */

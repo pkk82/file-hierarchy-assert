@@ -175,8 +175,8 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	public FileHierarchyAssert containsFile(String fileName, StringMatcher fileNameMatcher, String... dirPath) {
 		Path searchDir = calculateDir(dirPath);
-		Collection<Path> candidates = PathUtils.findFiles(searchDir);
-		Collection<Path> result = PathUtils.find(searchDir,
+		Collection<Path> candidates = PathUtils.findFilesRecursively(searchDir);
+		Collection<Path> result = PathUtils.findRecursively(searchDir,
 				new IOFileFilterCondition(fileName, fileNameMatcher, FileFileFilter.FILE));
 		then(result.size())
 				.overridingErrorMessage("\nExpecting:\n%s\n" +

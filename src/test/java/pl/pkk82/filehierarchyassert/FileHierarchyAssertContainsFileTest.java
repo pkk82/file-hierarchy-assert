@@ -6,9 +6,16 @@ public class FileHierarchyAssertContainsFileTest extends AbstractFileHiearchyAss
 
 
 	@Test
-	public void shouldSucceed() {
+	public void shouldSucceedWhenFileInMainFolderOfRootHierarchy() {
 		givenFileHierarchyAssert();
 		whenContainsFile("file1");
+		thenAssertionIsSucceeded();
+	}
+
+	@Test
+	public void shouldSucceedWhenFileInSubfolderOfRootHierarchy() {
+		givenFileHierarchyAssert();
+		whenContainsFile("file11");
 		thenAssertionIsSucceeded();
 	}
 
@@ -47,10 +54,11 @@ public class FileHierarchyAssertContainsFileTest extends AbstractFileHiearchyAss
 	@Test
 	public void shouldFailWhenDirInstead() {
 		givenFileHierarchyAssert();
-		whenContainsFile("dir21", "dir2");
+		whenContainsFile("dir221111", "dir2", "dir22", "dir221",  "dir2211", "dir22111");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
-				"to contain a file with a name equal to:\n <dir21>,\n" +
-				"but it contains:\n <no files>\n", preparePath("dir2")));
+				"to contain a file with a name equal to:\n <dir221111>,\n" +
+				"but it contains:\n <no files>\n",
+				preparePath("dir2", "dir22", "dir221",  "dir2211", "dir22111")));
 	}
 
 	@Test
@@ -63,10 +71,14 @@ public class FileHierarchyAssertContainsFileTest extends AbstractFileHiearchyAss
 	@Test
 	public void shouldFailWithRegex() {
 		givenFileHierarchyAssert();
-		whenContainsFile("dir\\d", StringMatcher.REGEX);
+		whenContainsFile("file\\d{3}", StringMatcher.REGEX, "dir2", "dir22", "dir221");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
-				"to contain a file with a name matching to:\n <dir\\d>,\n" +
-				"but it contains:\n <%s>\n <%s>\n", preparePath(), preparePath("file1"), preparePath("file2")));
+						"to contain a file with a name matching to:\n <file\\d{3}>,\n" +
+						"but it contains:\n <%s>\n <%s>\n <%s>\n",
+				preparePath("dir2", "dir22", "dir221"),
+				preparePath("dir2", "dir22", "dir221", "dir2211", "file22111"),
+				preparePath("dir2", "dir22", "dir221", "dir2211", "file22112"),
+				preparePath("dir2", "dir22", "dir221", "file2211")));
 	}
 
 	private void whenContainsFile(String fileName, String... dirPath) {
