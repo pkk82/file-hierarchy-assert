@@ -57,25 +57,43 @@ public class FileHierarchyAssertHasCountOfDirsTest extends AbstractFileHiearchyA
 		thenAssertionIsSucceeded();
 	}
 
+	@Test
+	public void shouldFailWhenNoDirectoryAtLevelOne() {
+		givenFileHierarchyAssert();
+		whenHasCountOfDirs(1, "dir3");
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+						"to contain a directory with a name equal to:\n <dir3>,\n" +
+						"but it contains:\n <%s>\n <%s>\n",
+				preparePath(),
+				preparePath("dir1"),
+				preparePath("dir2")));
+	}
 
 
 	@Test
-	public void shouldFailWhenNoDirectory() {
+	public void shouldFailWhenNoDirectoryAtLevelTwo() {
 		givenFileHierarchyAssert();
-		whenHasCountOfDirs(1, "dir1", "dir11", "dir111");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
-				preparePath("dir1", "dir11", "dir111")));
+		whenHasCountOfDirs(1, "dir1", "dir21");
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+						"to contain a directory with a name equal to:\n <dir21>,\n" +
+						"but it contains:\n <%s>\n <%s>\n",
+				preparePath("dir1"),
+				preparePath("dir1", "dir11"),
+				preparePath("dir1", "dir12")));
 	}
+
 
 	@Test
 	public void shouldFailWhenFile() {
 		givenFileHierarchyAssert();
 		whenHasCountOfDirs(1, "dir1", "file11");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
-				preparePath("dir1", "file11")));
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+						"to contain a directory with a name equal to:\n <file11>,\n" +
+						"but it contains:\n <%s>\n <%s>\n",
+				preparePath("dir1"),
+				preparePath("dir1", "dir11"),
+				preparePath("dir1", "dir12")));
 	}
-
-
 
 
 	private void whenHasCountOfDirs(int count, String... path) {

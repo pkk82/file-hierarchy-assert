@@ -238,17 +238,20 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 			return parents;
 		} else {
 			List<Path> all = new ArrayList<>();
-			for (Path parent : parents) {
-				Collection<Path> children = PathUtils.findSubdirs(parent, dirPath[0], nameMatcher);
-				if (children.isEmpty()) {
-					Path actualPath = parent.resolve(dirPath[0]);
-					then(actualPath.toFile())
-							.overridingErrorMessage("\nExpecting:\n%s\nto be an existing directory\n",
-									descPath(actualPath))
-							.exists().isDirectory();
-				}
-				all.addAll(calculateDirPath(children, nameMatcher, ArrayUtils.subarray(dirPath, 1, dirPath.length)));
-			}
+			String nextPathToResolve = dirPath[0];
+			Collection<Path> children = PathUtils.findSubdirs(parents, nextPathToResolve, nameMatcher);
+			Collection<Path> allSubdirs = PathUtils.findSubdirs(parents);
+			then(children.size())
+					.overridingErrorMessage("\nExpecting:\n%s\n" +
+									"to contain a directory with a name %s to:\n%s,\n" +
+									"but %s:\n%s\n",
+							descPaths(parents),
+							nameMatcher.getDescription(),
+							descName(nextPathToResolve),
+							descContain(parents),
+							descPaths(allSubdirs, " <no directories>"))
+					.isGreaterThan(0);
+			all.addAll(calculateDirPath(children, nameMatcher, ArrayUtils.subarray(dirPath, 1, dirPath.length)));
 			return all;
 		}
 	}
@@ -318,6 +321,10 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 			}
 		}
 		return buffer.toString();
+	}
+
+	private String descContain(Collection<?> collection) {
+		return collection.size() == 1 ? "it contains" : "they contain";
 	}
 
 	private FileHierarchyAssert exists() {

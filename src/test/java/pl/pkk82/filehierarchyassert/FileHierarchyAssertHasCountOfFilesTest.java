@@ -58,21 +58,14 @@ public class FileHierarchyAssertHasCountOfFilesTest extends AbstractFileHiearchy
 	}
 
 
-
-	@Test
-	public void shouldFailWhenNoDirectory() {
-		givenFileHierarchyAssert();
-		whenHasCountOfFiles(1, "dir1", "dir11", "dir111");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
-				preparePath("dir1", "dir11", "dir111")));
-	}
-
 	@Test
 	public void shouldFailWhenFile() {
 		givenFileHierarchyAssert();
-		whenHasCountOfFiles(1, "dir1", "file11");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
-				preparePath("dir1", "file11")));
+		whenHasCountOfFiles(1, "dir1", "dir12", "file121");
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+						"to contain a directory with a name equal to:\n <file121>,\n" +
+						"but it contains:\n <no directories>\n",
+				preparePath("dir1", "dir12")));
 	}
 
 

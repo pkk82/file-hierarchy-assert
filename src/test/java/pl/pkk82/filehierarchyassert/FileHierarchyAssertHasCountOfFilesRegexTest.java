@@ -43,10 +43,15 @@ public class FileHierarchyAssertHasCountOfFilesRegexTest extends AbstractFileHie
 	@Test
 	public void shouldFailWhenNoDirectory() {
 		givenFileHierarchyAssert(StringMatcher.REGEX);
-		whenHasCountOfFilesRegex(1, "dir1", "dir1\\d", "dir111");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
-				preparePath("dir1", "dir11", "dir111")));
+		whenHasCountOfFilesRegex(1, "dir1", "dir\\d{3}", "dir111");
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+						"to contain a directory with a name matching to:\n <dir\\d{3}>,\n" +
+						"but it contains:\n <%s>\n <%s>\n",
+				preparePath("dir1"),
+				preparePath("dir1", "dir11"),
+				preparePath("dir1", "dir12")));
 	}
+
 
 	private void whenHasCountOfFiles(int count, String... path) {
 		try {

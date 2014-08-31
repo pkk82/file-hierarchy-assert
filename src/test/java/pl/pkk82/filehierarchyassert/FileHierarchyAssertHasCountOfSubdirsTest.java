@@ -58,24 +58,26 @@ public class FileHierarchyAssertHasCountOfSubdirsTest extends AbstractFileHiearc
 	}
 
 
-
 	@Test
 	public void shouldFailWhenNoDirectory() {
 		givenFileHierarchyAssert();
 		whenHasCountOfSubdirs(1, "dir1", "dir11", "dir111");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
-				preparePath("dir1", "dir11", "dir111")));
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+						"to contain a directory with a name equal to:\n <dir111>,\n" +
+						"but it contains:\n <no directories>\n",
+				preparePath("dir1", "dir11")));
 	}
 
 	@Test
 	public void shouldFailWhenFile() {
 		givenFileHierarchyAssert();
-		whenHasCountOfSubdirs(1, "dir1", "file11");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
-				preparePath("dir1", "file11")));
+		whenHasCountOfSubdirs(1, "dir2", "dir22", "dir221", "file2211");
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+						"to contain a directory with a name equal to:\n <file2211>,\n" +
+						"but it contains:\n <%s>\n",
+				preparePath("dir2", "dir22", "dir221"),
+				preparePath("dir2", "dir22", "dir221", "dir2211")));
 	}
-
-
 
 
 	private void whenHasCountOfSubdirs(int count, String... path) {

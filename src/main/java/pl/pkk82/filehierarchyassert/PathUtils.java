@@ -96,10 +96,26 @@ public class PathUtils {
 		return toPaths(dir.toFile().listFiles((FileFilter) DirectoryFileFilter.DIRECTORY));
 	}
 
+	static Collection<Path> findSubdirs(Collection<Path> dirs) {
+		List<Path> foundedSubdirs = new ArrayList<>();
+		for (Path dir : dirs) {
+			foundedSubdirs.addAll(findSubdirs(dir));
+		}
+		return foundedSubdirs;
+	}
+
 	static Collection<Path> findSubdirs(Path dir, String dirName, StringMatcher nameMatcher) {
 		File[] files = dir.toFile().listFiles((FileFilter) new AndFileFilter(DirectoryFileFilter.DIRECTORY,
 				new IOFileFilterCondition(dirName, nameMatcher)));
 		return Lists.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
+	}
+
+	static Collection<Path> findSubdirs(Collection<Path> dirs, String dirName, StringMatcher nameMatcher) {
+		List<Path> foundedSubdirs = new ArrayList<>();
+		for (Path dir : dirs) {
+			foundedSubdirs.addAll(findSubdirs(dir, dirName, nameMatcher));
+		}
+		return foundedSubdirs;
 	}
 
 	/* Find recursively based on file */
