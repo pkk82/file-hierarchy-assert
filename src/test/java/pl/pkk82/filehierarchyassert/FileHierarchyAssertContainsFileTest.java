@@ -47,8 +47,12 @@ public class FileHierarchyAssertContainsFileTest extends AbstractFileHiearchyAss
 	public void shouldFailWhenNoDir() {
 		givenFileHierarchyAssert();
 		whenContainsFile("file11", "dir3");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto be an existing directory\n",
-				preparePath("dir3")));
+		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
+				"to contain a directory with a name equal to:\n <dir3>,\n" +
+				"but it contains:\n <%s>\n <%s>\n",
+				preparePath(),
+				preparePath("dir1"),
+				preparePath("dir2")));
 	}
 
 	@Test
@@ -61,37 +65,10 @@ public class FileHierarchyAssertContainsFileTest extends AbstractFileHiearchyAss
 				preparePath("dir2", "dir22", "dir221",  "dir2211", "dir22111")));
 	}
 
-	@Test
-	public void shouldSucceedWithRegex() {
-		givenFileHierarchyAssert();
-		whenContainsFile("file\\d", StringMatcher.REGEX);
-		thenAssertionIsSucceeded();
-	}
-
-	@Test
-	public void shouldFailWithRegex() {
-		givenFileHierarchyAssert();
-		whenContainsFile("file\\d{3}", StringMatcher.REGEX, "dir2", "dir22", "dir221");
-		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
-						"to contain a file with a name matching to:\n <file\\d{3}>,\n" +
-						"but it contains:\n <%s>\n <%s>\n <%s>\n",
-				preparePath("dir2", "dir22", "dir221"),
-				preparePath("dir2", "dir22", "dir221", "dir2211", "file22111"),
-				preparePath("dir2", "dir22", "dir221", "dir2211", "file22112"),
-				preparePath("dir2", "dir22", "dir221", "file2211")));
-	}
 
 	private void whenContainsFile(String fileName, String... dirPath) {
 		try {
 			fileHierarchyAssert.containsFile(fileName, dirPath);
-		} catch (AssertionError e) {
-			handleAssertionError(e);
-		}
-	}
-
-	private void whenContainsFile(String fileName, StringMatcher stringMatcher, String... dirPath) {
-		try {
-			fileHierarchyAssert.containsFile(fileName, stringMatcher, dirPath);
 		} catch (AssertionError e) {
 			handleAssertionError(e);
 		}

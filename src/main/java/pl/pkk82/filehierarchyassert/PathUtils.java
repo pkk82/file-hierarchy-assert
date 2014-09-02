@@ -93,6 +93,14 @@ public class PathUtils {
 		});
 	}
 
+	static Collection<Path> findRecursively(Collection<Path> dirs, FileFilter fileFilter) {
+		List<Path> foundedDirs = new ArrayList<>();
+		for (Path dir : dirs) {
+			foundedDirs.addAll(findRecursively(dir, fileFilter));
+		}
+		return foundedDirs;
+	}
+
 	/* Find in directory */
 
 	static Collection<Path> findFiles(Path dir) {

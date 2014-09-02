@@ -173,18 +173,19 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return containsFile(fileName, nameMatcher, dirPath);
 	}
 
-	public FileHierarchyAssert containsFile(String fileName, StringMatcher fileNameMatcher, String... dirPath) {
-		Path searchDir = calculateDir(dirPath);
-		Collection<Path> candidates = PathUtils.findFilesRecursively(searchDir);
-		Collection<Path> result = PathUtils.findRecursively(searchDir,
-				new IOFileFilterCondition(fileName, fileNameMatcher, FileFileFilter.FILE));
+	public FileHierarchyAssert containsFile(String fileName, StringMatcher nameMatcher, String... dirPath) {
+		Collection<Path> paths = calculateDirPath(nameMatcher, dirPath);
+		Collection<Path> candidates = PathUtils.findFilesRecursively(paths);
+		Collection<Path> result = PathUtils.findRecursively(paths,
+				new IOFileFilterCondition(fileName, nameMatcher, FileFileFilter.FILE));
 		then(result.size())
 				.overridingErrorMessage("\nExpecting:\n%s\n" +
 								"to contain a file with a name %s to:\n%s,\n" +
-								"but it contains:\n%s\n",
-						descPath(searchDir),
-						fileNameMatcher.getDescription(),
+								"but %s:\n%s\n",
+						descPaths(paths),
+						nameMatcher.getDescription(),
 						descName(fileName),
+						descContain(paths),
 						descPaths(candidates, " <no files>"))
 				.isGreaterThan(0);
 		return this;
