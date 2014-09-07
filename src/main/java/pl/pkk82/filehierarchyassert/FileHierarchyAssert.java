@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -243,10 +241,10 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 			return false;
 		}
 		for (int i = 0; i < lines.size(); i++) {
-			String regex = content.get(i);
+			String pattern = content.get(i);
 			String line = lines.get(i);
-			Matcher matcher = Pattern.compile(nameMatcherType.toRegex(regex)).matcher(line);
-			if (!matcher.matches()) {
+			boolean matchResult = nameMatcherType.matches(line, pattern);
+			if (!matchResult) {
 				return false;
 			}
 		}

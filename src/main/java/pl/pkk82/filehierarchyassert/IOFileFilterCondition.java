@@ -1,8 +1,6 @@
 package pl.pkk82.filehierarchyassert;
 
 import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.assertj.core.api.Condition;
@@ -25,8 +23,7 @@ class IOFileFilterCondition extends Condition<File> implements IOFileFilter {
 
 	@Override
 	public boolean matches(File value) {
-		Matcher matcher = Pattern.compile(nameMatcherType.toRegex(fileName)).matcher(value.getName());
-		return matcher.matches() && (additionalFilter == null || additionalFilter.accept(value));
+		return nameMatcherType.matches(value.getName(), fileName) && (additionalFilter == null || additionalFilter.accept(value));
 	}
 
 	@Override

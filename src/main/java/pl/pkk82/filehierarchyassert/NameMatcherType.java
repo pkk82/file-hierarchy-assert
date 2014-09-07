@@ -2,6 +2,8 @@ package pl.pkk82.filehierarchyassert;
 
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 public enum NameMatcherType {
 
 	STANDARD("equal"), REGEX("matching");
@@ -12,13 +14,14 @@ public enum NameMatcherType {
 		this.description = description;
 	}
 
-	public String toRegex(String name) {
+	public boolean matches(String name, String pattern) {
 		if (this == STANDARD) {
-			return Pattern.quote(name);
+			return StringUtils.equals(name, pattern);
 		} else {
-			return name;
+			return Pattern.compile(pattern).matcher(name).matches();
 		}
 	}
+
 
 	public String getDescription() {
 		return description;
