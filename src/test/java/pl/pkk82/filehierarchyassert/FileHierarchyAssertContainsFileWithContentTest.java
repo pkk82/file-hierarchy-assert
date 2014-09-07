@@ -36,7 +36,7 @@ public class FileHierarchyAssertContainsFileWithContentTest extends AbstractFile
 		givenFileHierarchyAssert();
 		whenContainsFileWithContent("file1", ImmutableList.of("line1"));
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
-				"to contain lines:\n <line1>,\n" +
+				"to contain lines equal to:\n <line1>,\n" +
 				"but it contains:\n <no lines>\n", preparePath("file1")));
 	}
 
@@ -45,7 +45,7 @@ public class FileHierarchyAssertContainsFileWithContentTest extends AbstractFile
 		givenFileHierarchyAssert();
 		whenContainsFileWithContent("file11", ImmutableList.<String>of(), "dir1");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
-				"to contain lines:\n <no lines>,\n" +
+				"to contain lines equal to:\n <no lines>,\n" +
 				"but it contains:\n <file11>\n", preparePath("dir1", "file11")));
 	}
 

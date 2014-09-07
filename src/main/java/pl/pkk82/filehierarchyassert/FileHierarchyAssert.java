@@ -1,15 +1,19 @@
 package pl.pkk82.filehierarchyassert;
 
-import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.BDDAssertions.then;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
@@ -30,7 +34,10 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	private static final String DESC_FILE_AND_DIR_SING = "file/directory";
 	private static final String DESC_FILE_AND_DIR_PLURAL = "files/directories";
 
+	private static final ThreadLocal<Collection<Path>> pathResult = new ThreadLocal<>();
+
 	private final StringMatcher nameMatcher;
+
 
 	public FileHierarchyAssert(FileHierarchy actual, StringMatcher nameMatcher) {
 		super(actual, FileHierarchyAssert.class);
@@ -178,6 +185,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		Collection<Path> candidates = PathUtils.findFilesRecursively(paths);
 		Collection<Path> result = PathUtils.findRecursively(paths,
 				new IOFileFilterCondition(fileName, nameMatcher, FileFileFilter.FILE));
+		pathResult.set(result);
 		then(result.size())
 				.overridingErrorMessage("\nExpecting:\n%s\n" +
 								"to contain a file with a name %s to:\n%s,\n" +
@@ -193,20 +201,60 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert containsFileWithContent(String fileName, List<String> content, String... dirPath) {
-		containsFile(fileName, StringMatcher.STANDARD, dirPath);
-		try {
-			Path file = calculateDir(dirPath).resolve(fileName);
-			List<String> lines = PathUtils.readLines(file);
-			then(lines).overridingErrorMessage("\nExpecting:\n%s\nto contain lines:\n%s,\nbut it contains:\n%s\n",
-					descPath(file),
+		return containsFileWithContent(fileName, content, nameMatcher, dirPath);
+	}
+
+	public FileHierarchyAssert containsFileWithContent(final String fileName, final List<String> content,
+			final StringMatcher nameMatcher, final String... dirPath) {
+		containsFile(fileName, nameMatcher, dirPath);
+		Collection<Path> candidates = pathResult.get();
+		Collection<Path> result = Collections2.filter(candidates, new Predicate<Path>() {
+			@Override
+			public boolean apply(Path input) {
+				return containsFileWithContent(input, content, nameMatcher);
+			}
+		});
+		if (candidates.size() == 1) {
+			then(result.size()).overridingErrorMessage("\nExpecting:\n%s\nto contain lines %s to:\n%s,\nbut %s:\n%s\n",
+					descPaths(candidates),
+					nameMatcher.getDescription(),
 					descLines(content, " <no lines>"),
-					descLines(lines, " <no lines>"))
-					.isEqualTo(content);
-		} catch (IOException e) {
-			fail(e.getMessage());
+					descContain(candidates),
+					descLines(PathUtils.readLines(Iterables.getOnlyElement(candidates)), " <no lines>"))
+					.isGreaterThan(0);
+		} else {
+			then(result.size()).overridingErrorMessage("\nExpecting one of:\n%s\nto contain lines %s to:\n%s,\nbut %s:\n%s\n",
+					descPaths(candidates),
+					nameMatcher.getDescription(),
+					descLines(content, " <no lines>"),
+					descContain(candidates),
+					descPathLines(candidates, " <no lines>"))
+					.isGreaterThan(0);
+
 		}
+
+
 		return this;
 	}
+
+	private boolean containsFileWithContent(Path input, List<String> content, StringMatcher nameMatcher) {
+		List<String> lines = PathUtils.readLines(input);
+		if (lines.size() != content.size()) {
+			return false;
+		}
+		for (int i = 0; i < lines.size(); i++) {
+			String regex = content.get(i);
+			String line = lines.get(i);
+			Matcher matcher = Pattern.compile(nameMatcher.toRegex(regex)).matcher(line);
+			if (!matcher.matches()) {
+				return false;
+			}
+		}
+
+		return true;
+
+	}
+
 
 	private Path calculateDir(String... dirPath) {
 		Path actualPath = actual.getRootDirectoryAsPath();
@@ -223,7 +271,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		}
 		return actualPath;
 	}
-
 
 	private Collection<Path> calculateDirPath(StringMatcher nameMatcher, String... dirPath) {
 		Path actualPath = actual.getRootDirectoryAsPath();
@@ -267,6 +314,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		}
 	}
 
+
 	private String descName(String name) {
 		return String.format(" <%s>", name);
 	}
@@ -275,7 +323,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	private String descPath(Path path) {
 		return String.format(" <%s>", path);
 	}
-
 
 	private String descPaths(Collection<Path> paths) {
 		return descPaths(paths, "");
@@ -298,6 +345,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return buffer.toString();
 	}
 
+
 	private String descCount(int count, String descSingular, String descPlural) {
 		if (count == 1) {
 			return String.format(" <1> %s", descSingular);
@@ -306,6 +354,19 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		}
 	}
 
+	private String descPathLines(Collection<Path> paths, String whenEmpty) {
+		StringBuilder buffer = new StringBuilder();
+		int i = paths.size();
+		for (Path path : paths) {
+			buffer.append(descPath(path));
+			buffer.append('\n');
+			buffer.append(descLines(PathUtils.readLines(path), whenEmpty));
+			if (--i != 0) {
+				buffer.append('\n');
+			}
+		}
+		return buffer.toString();
+	}
 
 	private String descLines(Collection<String> lines, String whenEmpty) {
 		StringBuilder buffer = new StringBuilder("");
@@ -328,11 +389,10 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return collection.size() == 1 ? "it contains" : "they contain";
 	}
 
+
 	private FileHierarchyAssert exists() {
 		isNotNull();
 		then(actual.getRootDirectoryAsFile()).exists().isDirectory();
 		return this;
 	}
-
-
 }

@@ -29,8 +29,12 @@ public class PathUtils {
 		}
 	};
 
-	static List<String> readLines(Path path) throws IOException {
-		return FileUtils.readLines(path.toFile());
+	static List<String> readLines(Path path) {
+		try {
+			return FileUtils.readLines(path.toFile());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/* Find recursively */
