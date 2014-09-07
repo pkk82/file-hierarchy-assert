@@ -58,14 +58,14 @@ public class FileHierarchyAssertContainsSubdirTest extends AbstractFileHiearchyA
 	@Test
 	public void shouldSucceedWithRegex() {
 		givenFileHierarchyAssert();
-		whenContainsSubdir("dir\\d", StringMatcher.REGEX);
+		whenContainsSubdir("dir\\d", NameMatcherType.REGEX);
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldFailWithRegex() {
 		givenFileHierarchyAssert();
-		whenContainsSubdir("file\\d", StringMatcher.REGEX);
+		whenContainsSubdir("file\\d", NameMatcherType.REGEX);
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 				"to contain a directory with a name matching to:\n <file\\d>,\n" +
 				"but it contains:\n <%s>\n <%s>\n", preparePath(), preparePath("dir1"), preparePath("dir2")));
@@ -79,9 +79,9 @@ public class FileHierarchyAssertContainsSubdirTest extends AbstractFileHiearchyA
 		}
 	}
 
-	private void whenContainsSubdir(String dirName, StringMatcher stringMatcher, String... dirPath) {
+	private void whenContainsSubdir(String dirName, NameMatcherType nameMatcherType, String... dirPath) {
 		try {
-			fileHierarchyAssert.containsSubdir(dirName, stringMatcher, dirPath);
+			fileHierarchyAssert.containsSubdir(dirName, nameMatcherType, dirPath);
 		} catch (AssertionError e) {
 			handleAssertionError(e);
 		}

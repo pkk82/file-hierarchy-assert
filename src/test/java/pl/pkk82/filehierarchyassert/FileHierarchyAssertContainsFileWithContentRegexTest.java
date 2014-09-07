@@ -11,7 +11,7 @@ public class FileHierarchyAssertContainsFileWithContentRegexTest extends Abstrac
 
 	@Test
 	public void shouldSucceed() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenContainsFileWithContent("file\\d", ImmutableList.<String>of());
 		thenAssertionIsSucceeded();
 	}
@@ -26,7 +26,7 @@ public class FileHierarchyAssertContainsFileWithContentRegexTest extends Abstrac
 
 	@Test
 	public void shouldSucceedWithTwoLevelPath() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenContainsFileWithContent("file\\d{3}", ImmutableList.of("file\\d{3}", "file\\d{3}"), "dir\\d",
 				"(dir12)|(dir21)");
 		thenAssertionIsSucceeded();
@@ -34,7 +34,7 @@ public class FileHierarchyAssertContainsFileWithContentRegexTest extends Abstrac
 
 	@Test
 	public void shouldFailWithTwoLevelPath() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenContainsFileWithContent("file\\d{3}", ImmutableList.of("file\\d{2}", "file\\d{3}"), "dir\\d",
 				"(dir12)|(dir21)");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting one of:\n <%s>\n <%s>\n <%s>\n" +
@@ -65,7 +65,7 @@ public class FileHierarchyAssertContainsFileWithContentRegexTest extends Abstrac
 
 	private void whenContainsFileWithContentRegex(String fileName, List<String> content, String... dirPath) {
 		try {
-			fileHierarchyAssert.containsFileWithContent(fileName, content, StringMatcher.REGEX, dirPath);
+			fileHierarchyAssert.containsFileWithContent(fileName, content, NameMatcherType.REGEX, dirPath);
 		} catch (AssertionError e) {
 			handleAssertionError(e);
 		}

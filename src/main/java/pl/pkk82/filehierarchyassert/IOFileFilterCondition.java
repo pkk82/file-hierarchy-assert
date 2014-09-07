@@ -9,23 +9,23 @@ import org.assertj.core.api.Condition;
 
 class IOFileFilterCondition extends Condition<File> implements IOFileFilter {
 	private final String fileName;
-	private final StringMatcher stringMatcher;
+	private final NameMatcherType nameMatcherType;
 	private final IOFileFilter additionalFilter;
 
-	public IOFileFilterCondition(String fileName, StringMatcher nameMatcher, IOFileFilter additionalFilter) {
+	public IOFileFilterCondition(String fileName, NameMatcherType nameMatcherType, IOFileFilter additionalFilter) {
 		super("file name: " + fileName);
 		this.fileName = fileName;
-		this.stringMatcher = nameMatcher;
+		this.nameMatcherType = nameMatcherType;
 		this.additionalFilter = additionalFilter;
 	}
 
-	public IOFileFilterCondition(String dirName, StringMatcher nameMatcher) {
-		this(dirName, nameMatcher, null);
+	public IOFileFilterCondition(String dirName, NameMatcherType nameMatcherType) {
+		this(dirName, nameMatcherType, null);
 	}
 
 	@Override
 	public boolean matches(File value) {
-		Matcher matcher = Pattern.compile(stringMatcher.toRegex(fileName)).matcher(value.getName());
+		Matcher matcher = Pattern.compile(nameMatcherType.toRegex(fileName)).matcher(value.getName());
 		return matcher.matches() && (additionalFilter == null || additionalFilter.accept(value));
 	}
 

@@ -7,14 +7,14 @@ public class FileHierarchyAssertHasCountOfSubdirsRegexTest extends AbstractFileH
 
 	@Test
 	public void shouldSuccedForOneLevelPath() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenHasCountOfSubdir(8, "dir\\d");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSuccedForTwoLevel() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenHasCountOfSubdir(4, "dir\\d", "dir\\d2");
 		thenAssertionIsSucceeded();
 	}
@@ -46,7 +46,7 @@ public class FileHierarchyAssertHasCountOfSubdirsRegexTest extends AbstractFileH
 
 	@Test
 	public void shouldFailWhenNoDirectory() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenHasCountOfSubdir(1, "dir1", "dir1\\d", "dir111");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n <%s>\n" +
 						"to contain a directory with a name matching to:\n <dir111>,\n" +
@@ -66,7 +66,7 @@ public class FileHierarchyAssertHasCountOfSubdirsRegexTest extends AbstractFileH
 
 	private void whenHasCountOfSubdirsRegex(int count, String... path) {
 		try {
-			fileHierarchyAssert.hasCountOfSubdirs(count, StringMatcher.REGEX, path);
+			fileHierarchyAssert.hasCountOfSubdirs(count, NameMatcherType.REGEX, path);
 		} catch (AssertionError e) {
 			handleAssertionError(e);
 		}

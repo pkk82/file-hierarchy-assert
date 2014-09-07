@@ -22,14 +22,14 @@ public class FileHierarchyAssertHasRootDirWithNameTest extends AbstractFileHiear
 
 	@Test
 	public void shouldSucceedWithRegexInAssert() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenHasRootDirWithName("f.l[eE]Hierar.+");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldFailWithUnmatchingRegexInAssert() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenHasRootDirWithName("f.l[eE]Hirar.+");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto have:\n <file name: f.l[eE]Hirar.+>",
 				preparePath()));
@@ -38,14 +38,14 @@ public class FileHierarchyAssertHasRootDirWithNameTest extends AbstractFileHiear
 	@Test
 	public void shouldSucceedWithRegexInMethod() {
 		givenFileHierarchyAssert();
-		whenHasRootDirWithName("f.l[eE]Hierar.+", StringMatcher.REGEX);
+		whenHasRootDirWithName("f.l[eE]Hierar.+", NameMatcherType.REGEX);
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldFailWithUnmatchingRegexInMethod() {
 		givenFileHierarchyAssert();
-		whenHasRootDirWithName("f.l[eE]Hirar.+", StringMatcher.REGEX);
+		whenHasRootDirWithName("f.l[eE]Hirar.+", NameMatcherType.REGEX);
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\nto have:\n <file name: f.l[eE]Hirar.+>",
 				preparePath()));
 	}
@@ -58,9 +58,9 @@ public class FileHierarchyAssertHasRootDirWithNameTest extends AbstractFileHiear
 		}
 	}
 
-	private void whenHasRootDirWithName(String rootDirName, StringMatcher stringMatcher) {
+	private void whenHasRootDirWithName(String rootDirName, NameMatcherType nameMatcherType) {
 		try {
-			fileHierarchyAssert.hasRootDirWithName(rootDirName, stringMatcher);
+			fileHierarchyAssert.hasRootDirWithName(rootDirName, nameMatcherType);
 		} catch (AssertionError e) {
 			handleAssertionError(e);
 		}

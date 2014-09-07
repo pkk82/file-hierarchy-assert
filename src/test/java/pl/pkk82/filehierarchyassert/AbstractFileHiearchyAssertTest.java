@@ -39,10 +39,10 @@ public class AbstractFileHiearchyAssertTest {
 	}
 
 
-	protected void givenFileHierarchyAssert(StringMatcher stringMatcher) {
+	protected void givenFileHierarchyAssert(NameMatcherType nameMatcherType) {
 		givenFileHierarchyGenerator();
 		fileHierarchy = fileHierarchyGenerator.generate();
-		fileHierarchyAssert = new FileHierarchyAssert(fileHierarchy, stringMatcher);
+		fileHierarchyAssert = new FileHierarchyAssert(fileHierarchy, nameMatcherType);
 	}
 
 	protected void givenFileHierarchyAssert() {

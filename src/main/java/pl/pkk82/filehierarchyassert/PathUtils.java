@@ -127,16 +127,16 @@ public class PathUtils {
 		return foundedSubdirs;
 	}
 
-	static Collection<Path> findSubdirs(Path dir, String dirName, StringMatcher nameMatcher) {
+	static Collection<Path> findSubdirs(Path dir, String dirName, NameMatcherType nameMatcherType) {
 		File[] files = dir.toFile().listFiles((FileFilter) new AndFileFilter(DirectoryFileFilter.DIRECTORY,
-				new IOFileFilterCondition(dirName, nameMatcher)));
+				new IOFileFilterCondition(dirName, nameMatcherType)));
 		return Lists.transform(Arrays.asList(files), FUNCTION_FILE_2_PATH);
 	}
 
-	static Collection<Path> findSubdirs(Collection<Path> dirs, String dirName, StringMatcher nameMatcher) {
+	static Collection<Path> findSubdirs(Collection<Path> dirs, String dirName, NameMatcherType nameMatcherType) {
 		List<Path> foundedSubdirs = new ArrayList<>();
 		for (Path dir : dirs) {
-			foundedSubdirs.addAll(findSubdirs(dir, dirName, nameMatcher));
+			foundedSubdirs.addAll(findSubdirs(dir, dirName, nameMatcherType));
 		}
 		return foundedSubdirs;
 	}

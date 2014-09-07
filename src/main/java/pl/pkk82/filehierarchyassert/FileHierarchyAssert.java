@@ -36,65 +36,65 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	private static final ThreadLocal<Collection<Path>> pathResult = new ThreadLocal<>();
 
-	private final StringMatcher nameMatcher;
+	private final NameMatcherType nameMatcherType;
 
 
-	public FileHierarchyAssert(FileHierarchy actual, StringMatcher nameMatcher) {
+	public FileHierarchyAssert(FileHierarchy actual, NameMatcherType nameMatcherType) {
 		super(actual, FileHierarchyAssert.class);
-		this.nameMatcher = nameMatcher;
+		this.nameMatcherType = nameMatcherType;
 		exists();
 	}
 
 	public FileHierarchyAssert(FileHierarchy actual) {
-		this(actual, StringMatcher.STANDARD);
+		this(actual, NameMatcherType.STANDARD);
 	}
 
-	public FileHierarchyAssert(File actual, StringMatcher nameMatcher) {
-		this(actual == null ? null : new FileHierarchy(actual.toPath()), nameMatcher);
+	public FileHierarchyAssert(File actual, NameMatcherType nameMatcherType) {
+		this(actual == null ? null : new FileHierarchy(actual.toPath()), nameMatcherType);
 	}
 
 
 	public FileHierarchyAssert(File actual) {
-		this(actual, StringMatcher.STANDARD);
+		this(actual, NameMatcherType.STANDARD);
 	}
 
-	public FileHierarchyAssert(Path actual, StringMatcher nameMatcher) {
-		this(actual == null ? null : new FileHierarchy(actual), nameMatcher);
+	public FileHierarchyAssert(Path actual, NameMatcherType nameMatcherType) {
+		this(actual == null ? null : new FileHierarchy(actual), nameMatcherType);
 	}
 
 
 	public FileHierarchyAssert(Path actual) {
-		this(actual, StringMatcher.STANDARD);
+		this(actual, NameMatcherType.STANDARD);
 	}
 
 
 	public FileHierarchyAssert hasRootDirWithName(final String rootDirName) {
-		return hasRootDirWithName(rootDirName, nameMatcher);
+		return hasRootDirWithName(rootDirName, nameMatcherType);
 	}
 
-	public FileHierarchyAssert hasRootDirWithName(final String rootDirName, final StringMatcher rootDirNameMatcher) {
+	public FileHierarchyAssert hasRootDirWithName(final String rootDirName, final NameMatcherType rootDirNameMatcher) {
 		then(actual.getRootDirectoryAsFile()).has(new IOFileFilterCondition(rootDirName, rootDirNameMatcher));
 		return this;
 	}
 
 
 	public FileHierarchyAssert hasParentDirWithName(final String parentDirName) {
-		return hasParentDirWithName(parentDirName, nameMatcher);
+		return hasParentDirWithName(parentDirName, nameMatcherType);
 	}
 
 	public FileHierarchyAssert hasParentDirWithName(final String parentDirName,
-			final StringMatcher parentDirNameMatcher) {
+			final NameMatcherType parentDirNameMatcher) {
 		then(actual.getRootDirectoryAsFile().getParentFile())
 				.has(new IOFileFilterCondition(parentDirName, parentDirNameMatcher));
 		return this;
 	}
 
 	public FileHierarchyAssert hasCountOfFilesAndDirs(int count, String... dirPath) {
-		return hasCountOfFilesAndDirs(count, nameMatcher, dirPath);
+		return hasCountOfFilesAndDirs(count, nameMatcherType, dirPath);
 	}
 
-	public FileHierarchyAssert hasCountOfFilesAndDirs(int count, StringMatcher nameMatcher, String... dirPath) {
-		Collection<Path> dirs = calculateDirPath(nameMatcher, dirPath);
+	public FileHierarchyAssert hasCountOfFilesAndDirs(int count, NameMatcherType nameMatcherType, String... dirPath) {
+		Collection<Path> dirs = calculateDirPath(nameMatcherType, dirPath);
 		Collection<Path> filesAndDirs = PathUtils.findFilesAndDirsRecursively(dirs);
 		then(filesAndDirs)
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
@@ -107,11 +107,11 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert hasCountOfDirs(int count, String... dirPath) {
-		return hasCountOfDirs(count, nameMatcher, dirPath);
+		return hasCountOfDirs(count, nameMatcherType, dirPath);
 	}
 
-	public FileHierarchyAssert hasCountOfDirs(int count, StringMatcher nameMatcher, String... dirPath) {
-		Collection<Path> dirs = calculateDirPath(nameMatcher, dirPath);
+	public FileHierarchyAssert hasCountOfDirs(int count, NameMatcherType nameMatcherType, String... dirPath) {
+		Collection<Path> dirs = calculateDirPath(nameMatcherType, dirPath);
 		Collection<Path> foundedDirs = PathUtils.findDirsRecursively(dirs);
 		then(foundedDirs)
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
@@ -123,11 +123,11 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert hasCountOfSubdirs(int count, String... dirPath) {
-		return hasCountOfSubdirs(count, nameMatcher, dirPath);
+		return hasCountOfSubdirs(count, nameMatcherType, dirPath);
 	}
 
-	public FileHierarchyAssert hasCountOfSubdirs(int count, StringMatcher nameMatcher, String... dirPath) {
-		Collection<Path> dirs = calculateDirPath(nameMatcher, dirPath);
+	public FileHierarchyAssert hasCountOfSubdirs(int count, NameMatcherType nameMatcherType, String... dirPath) {
+		Collection<Path> dirs = calculateDirPath(nameMatcherType, dirPath);
 		Collection<Path> subdirs = PathUtils.findSubdirsRecursively(dirs);
 		then(subdirs)
 				.overridingErrorMessage(String.format("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
@@ -140,11 +140,11 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert hasCountOfFiles(int count, String... dirPath) {
-		return hasCountOfFiles(count, nameMatcher, dirPath);
+		return hasCountOfFiles(count, nameMatcherType, dirPath);
 	}
 
-	public FileHierarchyAssert hasCountOfFiles(int count, StringMatcher nameMatcher, String... dirPath) {
-		Collection<Path> dirs = calculateDirPath(nameMatcher, dirPath);
+	public FileHierarchyAssert hasCountOfFiles(int count, NameMatcherType nameMatcherType, String... dirPath) {
+		Collection<Path> dirs = calculateDirPath(nameMatcherType, dirPath);
 		Collection<Path> files = PathUtils.findFilesRecursively(dirs);
 		then(files)
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
@@ -156,10 +156,10 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert containsSubdir(String dirName, String... dirPath) {
-		return containsSubdir(dirName, nameMatcher, dirPath);
+		return containsSubdir(dirName, nameMatcherType, dirPath);
 	}
 
-	public FileHierarchyAssert containsSubdir(String dirName, StringMatcher dirNameMatcher, String... dirPath) {
+	public FileHierarchyAssert containsSubdir(String dirName, NameMatcherType dirNameMatcher, String... dirPath) {
 		Path searchDir = calculateDir(dirPath);
 		Collection<Path> candidates = PathUtils.findSubdirs(searchDir);
 		Collection<Path> result = PathUtils.find(searchDir,
@@ -177,21 +177,21 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	public FileHierarchyAssert containsFile(String fileName, String... dirPath) {
-		return containsFile(fileName, nameMatcher, dirPath);
+		return containsFile(fileName, nameMatcherType, dirPath);
 	}
 
-	public FileHierarchyAssert containsFile(String fileName, StringMatcher nameMatcher, String... dirPath) {
-		Collection<Path> paths = calculateDirPath(nameMatcher, dirPath);
+	public FileHierarchyAssert containsFile(String fileName, NameMatcherType nameMatcherType, String... dirPath) {
+		Collection<Path> paths = calculateDirPath(nameMatcherType, dirPath);
 		Collection<Path> candidates = PathUtils.findFilesRecursively(paths);
 		Collection<Path> result = PathUtils.findRecursively(paths,
-				new IOFileFilterCondition(fileName, nameMatcher, FileFileFilter.FILE));
+				new IOFileFilterCondition(fileName, nameMatcherType, FileFileFilter.FILE));
 		pathResult.set(result);
 		then(result.size())
 				.overridingErrorMessage("\nExpecting:\n%s\n" +
 								"to contain a file with a name %s to:\n%s,\n" +
 								"but %s:\n%s\n",
 						descPaths(paths),
-						nameMatcher.getDescription(),
+						nameMatcherType.getDescription(),
 						descName(fileName),
 						descContain(paths),
 						descPaths(candidates, " <no files>"))
@@ -201,23 +201,23 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	}
 
 	public FileHierarchyAssert containsFileWithContent(String fileName, List<String> content, String... dirPath) {
-		return containsFileWithContent(fileName, content, nameMatcher, dirPath);
+		return containsFileWithContent(fileName, content, nameMatcherType, dirPath);
 	}
 
 	public FileHierarchyAssert containsFileWithContent(final String fileName, final List<String> content,
-			final StringMatcher nameMatcher, final String... dirPath) {
-		containsFile(fileName, nameMatcher, dirPath);
+			final NameMatcherType nameMatcherType, final String... dirPath) {
+		containsFile(fileName, nameMatcherType, dirPath);
 		Collection<Path> candidates = pathResult.get();
 		Collection<Path> result = Collections2.filter(candidates, new Predicate<Path>() {
 			@Override
 			public boolean apply(Path input) {
-				return containsFileWithContent(input, content, nameMatcher);
+				return containsFileWithContent(input, content, nameMatcherType);
 			}
 		});
 		if (candidates.size() == 1) {
 			then(result.size()).overridingErrorMessage("\nExpecting:\n%s\nto contain lines %s to:\n%s,\nbut %s:\n%s\n",
 					descPaths(candidates),
-					nameMatcher.getDescription(),
+					nameMatcherType.getDescription(),
 					descLines(content, " <no lines>"),
 					descContain(candidates),
 					descLines(PathUtils.readLines(Iterables.getOnlyElement(candidates)), " <no lines>"))
@@ -225,7 +225,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		} else {
 			then(result.size()).overridingErrorMessage("\nExpecting one of:\n%s\nto contain lines %s to:\n%s,\nbut %s:\n%s\n",
 					descPaths(candidates),
-					nameMatcher.getDescription(),
+					nameMatcherType.getDescription(),
 					descLines(content, " <no lines>"),
 					descContain(candidates),
 					descPathLines(candidates, " <no lines>"))
@@ -237,7 +237,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return this;
 	}
 
-	private boolean containsFileWithContent(Path input, List<String> content, StringMatcher nameMatcher) {
+	private boolean containsFileWithContent(Path input, List<String> content, NameMatcherType nameMatcherType) {
 		List<String> lines = PathUtils.readLines(input);
 		if (lines.size() != content.size()) {
 			return false;
@@ -245,7 +245,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		for (int i = 0; i < lines.size(); i++) {
 			String regex = content.get(i);
 			String line = lines.get(i);
-			Matcher matcher = Pattern.compile(nameMatcher.toRegex(regex)).matcher(line);
+			Matcher matcher = Pattern.compile(nameMatcherType.toRegex(regex)).matcher(line);
 			if (!matcher.matches()) {
 				return false;
 			}
@@ -272,34 +272,35 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return actualPath;
 	}
 
-	private Collection<Path> calculateDirPath(StringMatcher nameMatcher, String... dirPath) {
+	private Collection<Path> calculateDirPath(NameMatcherType nameMatcherType, String... dirPath) {
 		Path actualPath = actual.getRootDirectoryAsPath();
 		then(actualPath.toFile())
 				.overridingErrorMessage("\nExpecting:\n%s\nto be an existing directory\n",
 						descPath(actualPath))
 				.exists().isDirectory();
-		return calculateDirPath(Arrays.asList(actualPath), nameMatcher, dirPath);
+		return calculateDirPath(Arrays.asList(actualPath), nameMatcherType, dirPath);
 	}
 
-	private Collection<Path> calculateDirPath(Collection<Path> parents, StringMatcher nameMatcher, String... dirPath) {
+	private Collection<Path> calculateDirPath(Collection<Path> parents, NameMatcherType nameMatcherType,
+			String... dirPath) {
 		if (dirPath.length == 0) {
 			return parents;
 		} else {
 			List<Path> all = new ArrayList<>();
 			String nextPathToResolve = dirPath[0];
-			Collection<Path> children = PathUtils.findSubdirs(parents, nextPathToResolve, nameMatcher);
+			Collection<Path> children = PathUtils.findSubdirs(parents, nextPathToResolve, nameMatcherType);
 			Collection<Path> allSubdirs = PathUtils.findSubdirs(parents);
 			then(children.size())
 					.overridingErrorMessage("\nExpecting:\n%s\n" +
 									"to contain a directory with a name %s to:\n%s,\n" +
 									"but %s:\n%s\n",
 							descPaths(parents),
-							nameMatcher.getDescription(),
+							nameMatcherType.getDescription(),
 							descName(nextPathToResolve),
 							descContain(parents),
 							descPaths(allSubdirs, " <no directories>"))
 					.isGreaterThan(0);
-			all.addAll(calculateDirPath(children, nameMatcher, ArrayUtils.subarray(dirPath, 1, dirPath.length)));
+			all.addAll(calculateDirPath(children, nameMatcherType, ArrayUtils.subarray(dirPath, 1, dirPath.length)));
 			return all;
 		}
 	}

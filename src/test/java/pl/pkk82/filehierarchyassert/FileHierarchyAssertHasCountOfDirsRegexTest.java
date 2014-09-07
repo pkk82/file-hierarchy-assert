@@ -7,14 +7,14 @@ public class FileHierarchyAssertHasCountOfDirsRegexTest extends AbstractFileHiea
 
 	@Test
 	public void shouldSuccedForOneLevelPath() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenHasCountOfDirs(10, "dir\\d");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSuccedForTwoLevel() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenHasCountOfDirs(6, "dir\\d", "dir\\d2");
 		thenAssertionIsSucceeded();
 	}
@@ -47,7 +47,7 @@ public class FileHierarchyAssertHasCountOfDirsRegexTest extends AbstractFileHiea
 
 	@Test
 	public void shouldFailWhenNoDirectoryAtLevelOne() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenHasCountOfDirs(1, "dir3");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 						"to contain a directory with a name matching to:\n <dir3>,\n" +
@@ -60,7 +60,7 @@ public class FileHierarchyAssertHasCountOfDirsRegexTest extends AbstractFileHiea
 
 	@Test
 	public void shouldFailWhenNoDirectory() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenHasCountOfDirs(1, "dir\\d{2}");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 						"to contain a directory with a name matching to:\n <dir\\d{2}>,\n" +
@@ -79,7 +79,7 @@ public class FileHierarchyAssertHasCountOfDirsRegexTest extends AbstractFileHiea
 
 	private void whenHasCountOfDirsRegex(int count, String... path) {
 		try {
-			fileHierarchyAssert.hasCountOfDirs(count, StringMatcher.REGEX, path);
+			fileHierarchyAssert.hasCountOfDirs(count, NameMatcherType.REGEX, path);
 		} catch (AssertionError e) {
 			handleAssertionError(e);
 		}

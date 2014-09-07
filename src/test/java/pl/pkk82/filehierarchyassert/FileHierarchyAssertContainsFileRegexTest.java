@@ -14,7 +14,7 @@ public class FileHierarchyAssertContainsFileRegexTest extends AbstractFileHiearc
 
 	@Test
 	public void shouldFail() {
-		givenFileHierarchyAssert(StringMatcher.REGEX);
+		givenFileHierarchyAssert(NameMatcherType.REGEX);
 		whenContainsFile("file\\d{3}", "dir2", "dir22", "dir221");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 						"to contain a file with a name matching to:\n <file\\d{3}>,\n" +
@@ -65,7 +65,7 @@ public class FileHierarchyAssertContainsFileRegexTest extends AbstractFileHiearc
 
 	private void whenContainsFileRegex(String fileName, String... dirPath) {
 		try {
-			fileHierarchyAssert.containsFile(fileName, StringMatcher.REGEX, dirPath);
+			fileHierarchyAssert.containsFile(fileName, NameMatcherType.REGEX, dirPath);
 		} catch (AssertionError e) {
 			handleAssertionError(e);
 		}
