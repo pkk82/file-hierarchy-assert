@@ -54,26 +54,34 @@ public class AbstractFileHiearchyAssertTest {
 
 	private void givenFileHierarchyGenerator() {
 		fileHierarchyGenerator = createRootDirectory("fileHierarchy")
+
+				.file("file1")
+
+				.file("file2")
+
 				.directory("dir1")
+				.file("file11").line("file11-line1")
 				.directory("dir11").up()
 				.directory("dir12")
-				.file("file121").line("file121").line("file121").up()
-				.file("file11").line("file11").up()
+				.file("file121").line("file121-line1").line("file121-line2").up().up()
+
 				.directory("dir2")
+
 				.directory("dir21")
-				.file("file211").line("file211").line("file211")
-				.file("file212").line("file212").line("file212").up()
+				.file("file211").line("file211-line1").line("file211-line2")
+				.file("file212").line("file212-line1").line("file212-line2").up()
+
 				.directory("dir22")
 				.directory("dir221")
+				.file("file2211").line("file2211-line1").line("file2211-line2").line("file2211-line3")
+
 				.directory("dir2211")
+				.file("file22111").line("file22111-line1").line("file22111-line2").line("file22111-line3")
+				.line("file22111-line4")
+				.file("file22112").line("file22112-line1").line("file22112-line2").line("file22112-line3")
+				.line("file22112-line4")
 				.directory("dir22111")
-				.directory("dir221111")
-				.up().up()
-				.file("file22111").line("file22111").line("file22111").line("file22111").line("file22111")
-				.file("file22112").line("file22112").line("file22112").line("file22112").line("file22112").up()
-				.file("file2211").line("file2211").line("file2211").line("file2211").up().up().up()
-				.file("file1")
-				.file("file2");
+				.directory("dir221111");
 	}
 
 	protected void thenAssertionIsSucceeded() {

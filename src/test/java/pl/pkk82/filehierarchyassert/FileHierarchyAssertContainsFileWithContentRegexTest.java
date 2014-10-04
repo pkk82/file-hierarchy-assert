@@ -20,29 +20,29 @@ public class FileHierarchyAssertContainsFileWithContentRegexTest extends Abstrac
 	@Test
 	public void shouldSucceedWithOneLevelPath() {
 		givenFileHierarchyAssert();
-		whenContainsFileWithContentRegex("file\\d{2}", ImmutableList.of("file11"), "dir\\d");
+		whenContainsFileWithContentRegex("file\\d{2}", ImmutableList.of("file11-line1"), "dir\\d");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSucceedWithTwoLevelPath() {
 		givenFileHierarchyAssert(NameMatcherType.REGEX);
-		whenContainsFileWithContent("file\\d{3}", ImmutableList.of("file\\d{3}", "file\\d{3}"), "dir\\d",
-				"(dir12)|(dir21)");
+		whenContainsFileWithContent("file\\d{3}", ImmutableList.of("file\\d{3}-line\\d{1}", "file\\d{3}-line\\d{1}"),
+				"dir\\d", "(dir12)|(dir21)");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldFailWithTwoLevelPath() {
 		givenFileHierarchyAssert(NameMatcherType.REGEX);
-		whenContainsFileWithContent("file\\d{3}", ImmutableList.of("file\\d{2}", "file\\d{3}"), "dir\\d",
-				"(dir12)|(dir21)");
+		whenContainsFileWithContent("file\\d{3}", ImmutableList.of("file\\d{2}-line\\d{1}", "file\\d{3}-line\\d{1}"),
+				"dir\\d", "(dir12)|(dir21)");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting one of:\n <%s>\n <%s>\n <%s>\n" +
-						"to contain lines matching to:\n <file\\d{2}>\n <file\\d{3}>,\n" +
+						"to contain lines matching to:\n <file\\d{2}-line\\d{1}>\n <file\\d{3}-line\\d{1}>,\n" +
 						"but they contain:\n" +
-						" <%s>\n <file121>\n <file121>\n" +
-						" <%s>\n <file211>\n <file211>\n" +
-						" <%s>\n <file212>\n <file212>\n",
+						" <%s>\n <file121-line1>\n <file121-line2>\n" +
+						" <%s>\n <file211-line1>\n <file211-line2>\n" +
+						" <%s>\n <file212-line1>\n <file212-line2>\n",
 
 
 				preparePath("dir1", "dir12", "file121"),

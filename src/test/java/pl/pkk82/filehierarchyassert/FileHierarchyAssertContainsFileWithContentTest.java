@@ -20,14 +20,14 @@ public class FileHierarchyAssertContainsFileWithContentTest extends AbstractFile
 	@Test
 	public void shouldSucceedWithOneLevelPath() {
 		givenFileHierarchyAssert();
-		whenContainsFileWithContent("file11", ImmutableList.of("file11"), "dir1");
+		whenContainsFileWithContent("file11", ImmutableList.of("file11-line1"), "dir1");
 		thenAssertionIsSucceeded();
 	}
 
 	@Test
 	public void shouldSucceedWithTwoLevelPath() {
 		givenFileHierarchyAssert();
-		whenContainsFileWithContent("file212", ImmutableList.of("file212", "file212"), "dir2", "dir21");
+		whenContainsFileWithContent("file212", ImmutableList.of("file212-line1", "file212-line2"), "dir2", "dir21");
 		thenAssertionIsSucceeded();
 	}
 
@@ -46,7 +46,7 @@ public class FileHierarchyAssertContainsFileWithContentTest extends AbstractFile
 		whenContainsFileWithContent("file11", ImmutableList.<String>of(), "dir1");
 		thenAssertionIsFailed().hasMessage(String.format("\nExpecting:\n <%s>\n" +
 				"to contain lines equal to:\n <no lines>,\n" +
-				"but it contains:\n <file11>\n", preparePath("dir1", "file11")));
+				"but it contains:\n <file11-line1>\n", preparePath("dir1", "file11")));
 	}
 
 	private void whenContainsFileWithContent(String fileName, List<String> content, String... dirPath) {
