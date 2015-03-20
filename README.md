@@ -3,6 +3,18 @@ file-hierarchy-assert
 
 A small library to check file hierarchy state with assertj assertions
 
+## Maven use
+
+```xml
+<dependency>
+	<groupId>pl.pkk82.file-hierarchy-assert</groupId>
+	<artifactId>file-hierarchy-assert</artifactId>
+	<version>2.1</version>
+</dependency>
+```
+
+## Use
+
 With file hierarchy
 
 ```
