@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-public class FileHierarchyGitRepoExamplesTest extends AbstractFileHiearchyAssertTest {
+public class FileHierarchyAssertReadmeExamplesTest extends AbstractFileHiearchyAssertTest {
 
 	@Test
 	public void shouldPresentCorrectExamplesInDocumentation() {
