@@ -13,7 +13,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -79,10 +78,22 @@ public class PathUtils {
 		return toPaths(findFilesAndDirsRecursively(dir.toFile()));
 	}
 
+	static Collection<Path> findFilesAndSubdirsRecursively(Path dir) {
+		return toPaths(findFilesAndSubdirsRecursively(dir.toFile()));
+	}
+
 	static Collection<Path> findFilesAndDirsRecursively(Collection<Path> dirs) {
 		List<Path> foundedDirs = new ArrayList<>();
 		for (Path dir : dirs) {
 			foundedDirs.addAll(findFilesAndDirsRecursively(dir));
+		}
+		return foundedDirs;
+	}
+
+	static Collection<Path> findFilesAndSubdirsRecursively(Collection<Path> dirs) {
+		List<Path> foundedDirs = new ArrayList<>();
+		for (Path dir : dirs) {
+			foundedDirs.addAll(findFilesAndSubdirsRecursively(dir));
 		}
 		return foundedDirs;
 	}
@@ -159,6 +170,12 @@ public class PathUtils {
 
 	private static Collection<File> findFilesAndDirsRecursively(File dir) {
 		return FileUtils.listFilesAndDirs(dir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
+	}
+
+	private static Collection<File> findFilesAndSubdirsRecursively(File dir) {
+		Collection<File> filesAndSubdirs = FileUtils.listFilesAndDirs(dir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
+		filesAndSubdirs.remove(dir);
+		return filesAndSubdirs;
 	}
 
 	/* Conversion from files to paths methods */
