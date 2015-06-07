@@ -9,6 +9,7 @@ public class FileHierarchyAssertReadmeExamplesTest extends AbstractFileHiearchyA
 	@Test
 	public void shouldPresentCorrectExamplesInDocumentation() {
 		givenFileHierarchyAssert();
+		fileHierarchyAssert.exists();
 		fileHierarchyAssert.isNotEmpty();
 		fileHierarchyAssert.hasRootDirWithName("fileHierarchy");
 		fileHierarchyAssert.hasCountOfSubdirs(10);

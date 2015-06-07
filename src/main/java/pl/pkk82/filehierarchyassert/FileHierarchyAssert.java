@@ -16,6 +16,7 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.BDDAssertions;
 import pl.pkk82.filehierarchygenerator.FileHierarchy;
 
 
@@ -40,7 +41,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	public FileHierarchyAssert(FileHierarchy actual, NameMatcherType nameMatcherType) {
 		super(actual, FileHierarchyAssert.class);
 		this.nameMatcherType = nameMatcherType;
-		exists();
 	}
 
 	public FileHierarchyAssert(FileHierarchy actual) {
@@ -64,6 +64,27 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	public FileHierarchyAssert(Path actual) {
 		this(actual, NameMatcherType.STANDARD);
+	}
+
+	public FileHierarchyAssert exists() {
+		isNotNull();
+		then(actual.getRootDirectoryAsFile())
+				.overridingErrorMessage("\nExpecting:\n%s\nto exist\n", descPath(actual.getRootDirectoryAsPath()))
+				.exists();
+		then(actual.getRootDirectoryAsFile())
+				.overridingErrorMessage("\nExpecting:\n%s\nto be directory\n", descPath(actual.getRootDirectoryAsPath()))
+				.isDirectory();
+		return this;
+	}
+
+	public FileHierarchyAssert doesNotExist() {
+		isNotNull();
+		if (!actual.getRootDirectoryAsFile().isFile()) {
+			then(actual.getRootDirectoryAsFile())
+					.overridingErrorMessage("\nExpecting:\n%s\nto not exist\n", descPath(actual.getRootDirectoryAsPath()))
+					.doesNotExist();
+		}
+		return this;
 	}
 
 	public FileHierarchyAssert isEmpty() {
@@ -426,9 +447,5 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return collection.size() == 1 ? "it contains" : "they contain";
 	}
 
-	private FileHierarchyAssert exists() {
-		isNotNull();
-		then(actual.getRootDirectoryAsFile()).exists().isDirectory();
-		return this;
-	}
+
 }

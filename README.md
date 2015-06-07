@@ -48,6 +48,7 @@ With file hierarchy
 ```
 assertions are correct
 ```java
+fileHierarchyAssert.exists();
 fileHierarchyAssert.isNotEmpty();
 fileHierarchyAssert.hasRootDirWithName("fileHierarchy");
 fileHierarchyAssert.hasCountOfSubdirs(10);
