@@ -9,7 +9,7 @@ A small library to check file hierarchy state with assertj assertions
 <dependency>
 	<groupId>pl.pkk82.file-hierarchy-assert</groupId>
 	<artifactId>file-hierarchy-assert</artifactId>
-	<version>2.1.2</version>
+	<version>2.2</version>
 </dependency>
 ```
 
