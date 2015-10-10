@@ -10,7 +10,7 @@
 	<artifactId>file-hierarchy-assert</artifactId>
 	<packaging>jar</packaging>
 	<name>File Hierarchy Assert</name>
-	<version>2.2.1-SNAPSHOT</version>
+	<version>3.0-SNAPSHOT</version>
 	<description>A small library to check file hierarchy state with assertj assertions</description>
 	<url>http://github.com/pkk82/file-hierarchy-assert/wiki</url>
 	<licenses>
