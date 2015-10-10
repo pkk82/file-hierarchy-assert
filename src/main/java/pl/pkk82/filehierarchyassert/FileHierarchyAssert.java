@@ -1,7 +1,5 @@
 package pl.pkk82.filehierarchyassert;
 
-import static org.assertj.core.api.BDDAssertions.then;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -15,12 +13,10 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.BDDAssertions;
 import pl.pkk82.filehierarchygenerator.FileHierarchy;
 
 
-public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, FileHierarchy> {
+public class FileHierarchyAssert {
 
 
 	private static final String DESC_FILE_SING = "file";
@@ -37,9 +33,10 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 
 	private final NameMatcherType nameMatcherType;
+	private final FileHierarchy actual;
 
 	public FileHierarchyAssert(FileHierarchy actual, NameMatcherType nameMatcherType) {
-		super(actual, FileHierarchyAssert.class);
+		this.actual = actual;
 		this.nameMatcherType = nameMatcherType;
 	}
 
@@ -91,11 +88,11 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		isNotNull();
 		Collection<Path> dirs = calculateDirPath(nameMatcherType);
 		Collection<Path> filesAndSubdirs = PathUtils.findFilesAndSubdirsRecursively(dirs);
-		then(filesAndSubdirs)
+		then(filesAndSubdirs.size())
 				.overridingErrorMessage("\nExpecting:\n%s\nto be empty, but contains:\n%s\n",
 						descPaths(dirs),
 						descCountWithDetails(filesAndSubdirs, DESC_FILE_AND_DIR_SING, DESC_FILE_AND_DIR_PLURAL))
-				.hasSize(0);
+				.isEqualTo(0);
 		return this;
 	}
 
@@ -111,7 +108,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	public FileHierarchyAssert hasRootDirWithName(final String rootDirName) {
 		return hasRootDirWithName(rootDirName, nameMatcherType);
 	}
-
 
 	public FileHierarchyAssert hasRootDirWithName(final String rootDirName, final NameMatcherType rootDirNameMatcher) {
 		then(actual.getRootDirectoryAsFile()).has(new IOFileFilterCondition(rootDirName, rootDirNameMatcher));
@@ -129,6 +125,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return this;
 	}
 
+
 	public FileHierarchyAssert hasCountOfFilesAndDirs(int count, String... dirPath) {
 		return hasCountOfFilesAndDirs(count, nameMatcherType, dirPath);
 	}
@@ -137,28 +134,27 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return hasCountOfFilesAndSubdirs(count, nameMatcherType, dirPath);
 	}
 
-
 	public FileHierarchyAssert hasCountOfFilesAndDirs(int count, NameMatcherType nameMatcherType, String... dirPath) {
 		Collection<Path> dirs = calculateDirPath(nameMatcherType, dirPath);
 		Collection<Path> filesAndDirs = PathUtils.findFilesAndDirsRecursively(dirs);
-		then(filesAndDirs)
+		then(filesAndDirs.size())
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
 						descPaths(dirs),
 						descCount(count, DESC_FILE_AND_DIR_SING, DESC_FILE_AND_DIR_PLURAL),
 						descCountWithDetails(filesAndDirs, DESC_FILE_AND_DIR_SING, DESC_FILE_AND_DIR_PLURAL))
-				.hasSize(count);
+				.isEqualTo(count);
 		return this;
 	}
 
 	public FileHierarchyAssert hasCountOfFilesAndSubdirs(int count, NameMatcherType nameMatcherType, String... dirPath) {
 		Collection<Path> dirs = calculateDirPath(nameMatcherType, dirPath);
 		Collection<Path> filesAndSubdirs = PathUtils.findFilesAndSubdirsRecursively(dirs);
-		then(filesAndSubdirs)
+		then(filesAndSubdirs.size())
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
 						descPaths(dirs),
 						descCount(count, DESC_FILE_AND_DIR_SING, DESC_FILE_AND_DIR_PLURAL),
 						descCountWithDetails(filesAndSubdirs, DESC_FILE_AND_DIR_SING, DESC_FILE_AND_DIR_PLURAL))
-				.hasSize(count);
+				.isEqualTo(count);
 		return this;
 	}
 
@@ -166,15 +162,16 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return hasCountOfDirs(count, nameMatcherType, dirPath);
 	}
 
+
 	public FileHierarchyAssert hasCountOfDirs(int count, NameMatcherType nameMatcherType, String... dirPath) {
 		Collection<Path> dirs = calculateDirPath(nameMatcherType, dirPath);
 		Collection<Path> foundedDirs = PathUtils.findDirsRecursively(dirs);
-		then(foundedDirs)
+		then(foundedDirs.size())
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
 						descPaths(dirs),
 						descCount(count, DESC_DIR_SING, DESC_DIR_PLURAL),
 						descCountWithDetails(foundedDirs, DESC_DIR_SING, DESC_DIR_PLURAL))
-				.hasSize(count);
+				.isEqualTo(count);
 		return this;
 	}
 
@@ -182,16 +179,15 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return hasCountOfSubdirs(count, nameMatcherType, dirPath);
 	}
 
-
 	public FileHierarchyAssert hasCountOfSubdirs(int count, NameMatcherType nameMatcherType, String... dirPath) {
 		Collection<Path> dirs = calculateDirPath(nameMatcherType, dirPath);
 		Collection<Path> subdirs = PathUtils.findSubdirsRecursively(dirs);
-		then(subdirs)
+		then(subdirs.size())
 				.overridingErrorMessage(String.format("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
 						descPaths(dirs),
 						descCount(count, DESC_DIR_SING, DESC_DIR_PLURAL),
 						descCountWithDetails(subdirs, DESC_DIR_SING, DESC_DIR_PLURAL)))
-				.hasSize(count);
+				.isEqualTo(count);
 		return this;
 	}
 
@@ -202,19 +198,19 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	public FileHierarchyAssert hasCountOfFiles(int count, NameMatcherType nameMatcherType, String... dirPath) {
 		Collection<Path> dirs = calculateDirPath(nameMatcherType, dirPath);
 		Collection<Path> files = PathUtils.findFilesRecursively(dirs);
-		then(files)
+		then(files.size())
 				.overridingErrorMessage("\nExpecting:\n%s\nto contain:\n%s\nbut contains:\n%s\n",
 						descPaths(dirs),
 						descCount(count, DESC_FILE_SING, DESC_FILE_PLURAL),
 						descCountWithDetails(files, DESC_FILE_SING, DESC_FILE_PLURAL))
-				.hasSize(count);
+				.isEqualTo(count);
 		return this;
 	}
+
 
 	public FileHierarchyAssert containsSubdir(String dirName, String... dirPath) {
 		return containsSubdir(dirName, nameMatcherType, dirPath);
 	}
-
 
 	public FileHierarchyAssert containsSubdir(String dirName, NameMatcherType dirNameMatcher, String... dirPath) {
 		Path searchDir = calculateDir(dirPath);
@@ -256,6 +252,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 	}
 
+
 	public FileHierarchyAssert containsFileWithContent(String fileName, List<String> content, String... dirPath) {
 		return containsFileWithContent(fileName, content, nameMatcherType, dirPath);
 	}
@@ -292,7 +289,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 
 		return this;
 	}
-
 
 	private boolean containsFileWithContent(Path input, List<String> content, NameMatcherType nameMatcherType) {
 		List<String> lines = PathUtils.readLines(input);
@@ -337,6 +333,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return calculateDirPath(Collections.singletonList(actualPath), nameMatcherType, dirPath);
 	}
 
+
 	private Collection<Path> calculateDirPath(Collection<Path> parents, NameMatcherType nameMatcherType,
 											  String... dirPath) {
 		if (dirPath.length == 0) {
@@ -361,7 +358,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		}
 	}
 
-
 	private String descCountWithDetails(Collection<Path> files, String descSingular, String descPlural) {
 		if (files.isEmpty()) {
 			return String.format(" <0> %s", descPlural);
@@ -372,7 +368,6 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		}
 	}
 
-
 	private String descName(String name) {
 		return String.format(" <%s>", name);
 	}
@@ -380,6 +375,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 	private String descPath(Path path) {
 		return String.format(" <%s>", path);
 	}
+
 
 	private String descPaths(Collection<Path> paths) {
 		return descPaths(paths, "");
@@ -425,6 +421,7 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return buffer.toString();
 	}
 
+
 	private String descLines(Collection<String> lines, String whenEmpty) {
 		StringBuilder buffer = new StringBuilder("");
 		if (lines.isEmpty()) {
@@ -442,9 +439,23 @@ public class FileHierarchyAssert extends AbstractAssert<FileHierarchyAssert, Fil
 		return buffer.toString();
 	}
 
-
 	private String descContain(Collection<?> collection) {
 		return collection.size() == 1 ? "it contains" : "they contain";
+	}
+
+	private void isNotNull() {
+		if (actual == null) {
+			throw new AssertionError("File should not be null");
+		}
+	}
+
+	private FileAssert then(File file) {
+		return new FileAssert(file);
+	}
+
+
+	private SizeAssert then(int size) {
+		return new SizeAssert(size);
 	}
 
 

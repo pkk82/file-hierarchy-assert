@@ -3,15 +3,13 @@ package pl.pkk82.filehierarchyassert;
 import java.io.File;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.assertj.core.api.Condition;
 
-class IOFileFilterCondition extends Condition<File> implements IOFileFilter {
+class IOFileFilterCondition implements IOFileFilter {
 	private final String fileName;
 	private final NameMatcherType nameMatcherType;
 	private final IOFileFilter additionalFilter;
 
 	public IOFileFilterCondition(String fileName, NameMatcherType nameMatcherType, IOFileFilter additionalFilter) {
-		super("file name: " + fileName);
 		this.fileName = fileName;
 		this.nameMatcherType = nameMatcherType;
 		this.additionalFilter = additionalFilter;
@@ -21,9 +19,12 @@ class IOFileFilterCondition extends Condition<File> implements IOFileFilter {
 		this(dirName, nameMatcherType, null);
 	}
 
-	@Override
 	public boolean matches(File value) {
 		return nameMatcherType.matches(value.getName(), fileName) && (additionalFilter == null || additionalFilter.accept(value));
+	}
+
+	public String getDescription() {
+		return "file name: " + fileName;
 	}
 
 	@Override
