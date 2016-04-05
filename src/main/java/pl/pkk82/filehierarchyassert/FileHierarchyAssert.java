@@ -13,6 +13,7 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import pl.pkk82.filehierarchygenerator.FileHierarchy;
 
 
@@ -119,7 +120,7 @@ public class FileHierarchyAssert {
 	}
 
 	public FileHierarchyAssert hasParentDirWithName(final String parentDirName,
-													final NameMatcherType parentDirNameMatcher) {
+			final NameMatcherType parentDirNameMatcher) {
 		then(actual.getRootDirectoryAsFile().getParentFile())
 				.has(new IOFileFilterCondition(parentDirName, parentDirNameMatcher));
 		return this;
@@ -257,29 +258,30 @@ public class FileHierarchyAssert {
 		return containsFileWithContent(fileName, content, nameMatcherType, dirPath);
 	}
 
-	public FileHierarchyAssert containsFileWithContent(final String fileName, final List<String> content,
-													   final NameMatcherType nameMatcherType, final String... dirPath) {
+	public FileHierarchyAssert containsFileWithContent(final String fileName, final List<String> expectedContent,
+			final NameMatcherType nameMatcherType, final String... dirPath) {
 		containsFile(fileName, nameMatcherType, dirPath);
 		Collection<Path> candidates = pathResult.get();
 		Collection<Path> result = Collections2.filter(candidates, new Predicate<Path>() {
 			@Override
 			public boolean apply(Path input) {
-				return containsFileWithContent(input, content, nameMatcherType);
+				return containsFileWithContent(input, expectedContent, nameMatcherType);
 			}
 		});
 		if (candidates.size() == 1) {
+			List<String> content = PathUtils.readLines(Iterables.getOnlyElement(candidates));
 			then(result.size()).overridingErrorMessage("\nExpecting:\n%s\nto contain lines %s to:\n%s,\nbut %s:\n%s\n",
 					descPaths(candidates),
 					nameMatcherType.getDescription(),
-					descLines(content, " <no lines>"),
+					descLines(markDifferences(expectedContent, content), " <no lines>"),
 					descContain(candidates),
-					descLines(PathUtils.readLines(Iterables.getOnlyElement(candidates)), " <no lines>"))
+					descLines(markDifferences(content, expectedContent), " <no lines>"))
 					.isGreaterThan(0);
 		} else {
 			then(result.size()).overridingErrorMessage("\nExpecting one of:\n%s\nto contain lines %s to:\n%s,\nbut %s:\n%s\n",
 					descPaths(candidates),
 					nameMatcherType.getDescription(),
-					descLines(content, " <no lines>"),
+					descLines(expectedContent, " <no lines>"),
 					descContain(candidates),
 					descPathLines(candidates, " <no lines>"))
 					.isGreaterThan(0);
@@ -288,6 +290,20 @@ public class FileHierarchyAssert {
 
 
 		return this;
+	}
+
+	private List<String> markDifferences(List<String> toMark, List<String> template) {
+		List<String> marked = new ArrayList<>();
+		for (int i = 0; i < toMark.size(); i++) {
+			String toCheck = toMark.get(i);
+			boolean equals = i < template.size() && StringUtils.equals(toCheck, template.get(i));
+			if (equals) {
+				marked.add(toCheck);
+			} else {
+				marked.add(toCheck + "*");
+			}
+		}
+		return marked;
 	}
 
 	private boolean containsFileWithContent(Path input, List<String> content, NameMatcherType nameMatcherType) {
@@ -335,7 +351,7 @@ public class FileHierarchyAssert {
 
 
 	private Collection<Path> calculateDirPath(Collection<Path> parents, NameMatcherType nameMatcherType,
-											  String... dirPath) {
+			String... dirPath) {
 		if (dirPath.length == 0) {
 			return parents;
 		} else {
@@ -436,7 +452,7 @@ public class FileHierarchyAssert {
 
 			}
 		}
-		return buffer.toString();
+		return buffer.toString().replaceAll("\\*>", ">*");
 	}
 
 	private String descContain(Collection<?> collection) {
